@@ -1,0 +1,6 @@
+@AltermedManager_HostAddress = http://localhost:5299
+
+GET {{AltermedManager_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

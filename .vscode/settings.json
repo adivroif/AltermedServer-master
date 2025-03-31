@@ -1,0 +1,33 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "altermed.postgres.database.azure.com",
+            "port": 5432,
+            "driver": "MySQL",
+            "name": "DBconnection",
+            "database": "altermedb",
+            "username": "dev",
+            "password": "afeka26!"
+        },
+        {
+            "pgOptions": {
+                "ssl": {
+                    "rejectUnauthorized": true
+                }
+            },
+            "previewLimit": 50,
+            "server": "altermed.postgres.database.azure.com",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "database": "altermedb",
+            "username": "dev",
+            "password": "afeka26!",
+            "name": "DBconnection"
+        }
+    ]
+}
