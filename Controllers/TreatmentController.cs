@@ -9,10 +9,10 @@ namespace AltermedManager.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TretmentController : ControllerBase
+    public class TreatmentController : ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
-        public TretmentController(ApplicationDbContext dbContext)
+        public TreatmentController(ApplicationDbContext dbContext)
         {
             this.dbContext = dbContext;
 
