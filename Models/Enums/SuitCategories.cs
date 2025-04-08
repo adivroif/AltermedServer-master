@@ -1,6 +1,6 @@
 ﻿namespace AltermedManager.Models.Enums
     {
-    public enum SuitCategories
+    public enum suitCategories
         {
         Infants, 
         Youth,

@@ -63,7 +63,7 @@ namespace AltermedManager.Controllers
                 treatmentDescription = newTreatment.treatmentDescription,
                // treatmentPlace = newTreatment.treatmentPlace,
                 treatmentPrice = newTreatment.treatmentPrice,
-                SuitCategories = newTreatment.SuitCategories,
+                suitCategories = newTreatment.suitCategories,
             };
             dbContext.Treatments.Add(treatmentEntity);
             dbContext.SaveChanges();
@@ -85,7 +85,7 @@ namespace AltermedManager.Controllers
             treatment.treatmentPrice = updateTreatmentDto.treatmentPrice;
            // treatment.treatmentPlace = updateTreatmentDto.treatmentPlace;
             treatment.treatmentDescription = updateTreatmentDto.treatmentDescription;
-            treatment.SuitCategories = updateTreatmentDto.SuitCategories;
+            treatment.suitCategories = updateTreatmentDto.suitCategories;
 
             dbContext.SaveChanges();
             return Ok(treatment);

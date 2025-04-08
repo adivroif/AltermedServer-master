@@ -11,6 +11,6 @@ namespace AltermedManager.Models.Dtos
         public decimal treatmentPrice { get; set; }
         //public Address treatmentPlace { get; set; }
         //public Address place { get; set; }
-        public List<SuitCategories> SuitCategories { get; set; }
+        public List<suitCategories> suitCategories { get; set; }
     }
 }
