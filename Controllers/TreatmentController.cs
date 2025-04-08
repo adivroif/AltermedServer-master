@@ -61,6 +61,7 @@ namespace AltermedManager.Controllers
                 treatmentId = newTreatment.treatmentId,
                 treatmentName = newTreatment.treatmentName,
                 treatmentDescription = newTreatment.treatmentDescription,
+                date_of_treatment = newTreatment.date_of_treatment,
                // treatmentPlace = newTreatment.treatmentPlace,
                 treatmentPrice = newTreatment.treatmentPrice,
                 suitCategories = newTreatment.suitCategories,
@@ -83,6 +84,7 @@ namespace AltermedManager.Controllers
             treatment.treatmentId = updateTreatmentDto.treatmentId;
             treatment.treatmentName = updateTreatmentDto.treatmentName;
             treatment.treatmentPrice = updateTreatmentDto.treatmentPrice;
+            treatment.date_of_treatment = updateTreatmentDto.date_of_treatment;
            // treatment.treatmentPlace = updateTreatmentDto.treatmentPlace;
             treatment.treatmentDescription = updateTreatmentDto.treatmentDescription;
             treatment.suitCategories = updateTreatmentDto.suitCategories;

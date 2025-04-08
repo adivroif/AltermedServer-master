@@ -12,6 +12,7 @@ namespace AltermedManager.Models.Entities
         public int treatmentId { get; set; }
         public string treatmentName { get; set; }
         public string treatmentDescription { get; set; }
+        public string date_of_treatment { get; set; }
         public decimal treatmentPrice { get; set; }
         //public Address treatmentPlace { get; set; }
         //public Address treatmentPlace { get; set; }
