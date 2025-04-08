@@ -10,12 +10,12 @@ namespace AltermedManager.Models.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int treatmentId { get; set; }
-        public string treatmetName { get; set; }
+        public string treatmentName { get; set; }
         public string treatmentDescription { get; set; }
         public decimal treatmentPrice { get; set; }
         //public Address treatmentPlace { get; set; }
         //public Address treatmentPlace { get; set; }
-        public List<SuitCategories> SuitCategories { get; set; }
+        public List<SuitCategories> suitCategories { get; set; }
 
         }
     }
