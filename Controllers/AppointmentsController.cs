@@ -75,6 +75,7 @@ namespace AltermedManager.Controllers
             return Ok(appointmentEntity);
         }
 
+
         [HttpPut]
         [Route("{id:guid}")]
         public IActionResult UpdateAppointment(Guid id, UpdateAppointmentDto updateAppointmentDto)
