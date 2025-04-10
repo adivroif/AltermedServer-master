@@ -82,6 +82,37 @@ namespace AltermedManager.Migrations
                     b.ToTable("Appointments");
                 });
 
+            modelBuilder.Entity("AltermedManager.Models.Entities.AppointmentSlots", b =>
+                {
+                    b.Property<int>("slotid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("slotid"));
+
+                    b.Property<string>("date_of_treatment")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("doctorid")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("endtime")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("isbooked")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("starttime")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("slotid");
+
+                    b.ToTable("AppointmentSlots");
+                });
+
             modelBuilder.Entity("AltermedManager.Models.Entities.Doctor", b =>
                 {
                     b.Property<Guid>("DoctorId")
@@ -193,6 +224,9 @@ namespace AltermedManager.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("appointmentId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("createdOn")
                         .HasColumnType("timestamp with time zone");
 
@@ -212,9 +246,6 @@ namespace AltermedManager.Migrations
                     b.Property<int>("requestType")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("treatmentId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("requestId");
 
                     b.HasIndex("patientId");
@@ -230,30 +261,29 @@ namespace AltermedManager.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("treatmentId"));
 
-                    b.PrimitiveCollection<int[]>("SuitCategories")
+                    b.Property<bool>("isAdvanced")
+                        .HasColumnType("boolean");
+
+                    b.PrimitiveCollection<List<string>>("suitCategories")
                         .IsRequired()
-                        .HasColumnType("integer[]");
+                        .HasColumnType("text[]");
 
                     b.Property<string>("treatmentDescription")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("treatmentDuration")
-                        .HasColumnType("integer");
+                    b.Property<string>("treatmentGroup")
+                        .IsRequired()
+                        .HasColumnType("text");
 
-                    b.Property<int>("treatmentPlaceId")
-                        .HasColumnType("integer");
+                    b.Property<string>("treatmentName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<decimal>("treatmentPrice")
                         .HasColumnType("numeric");
 
-                    b.Property<string>("treatmetName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.HasKey("treatmentId");
-
-                    b.HasIndex("treatmentPlaceId");
 
                     b.ToTable("Treatments");
                 });
@@ -294,17 +324,6 @@ namespace AltermedManager.Migrations
                         .HasForeignKey("patientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("AltermedManager.Models.Entities.Treatment", b =>
-                {
-                    b.HasOne("AltermedManager.Models.Entities.Address", "treatmentPlace")
-                        .WithMany()
-                        .HasForeignKey("treatmentPlaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("treatmentPlace");
                 });
 
             modelBuilder.Entity("AltermedManager.Models.Entities.Patient", b =>

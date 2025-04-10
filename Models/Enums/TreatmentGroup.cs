@@ -6,7 +6,9 @@
             bodyMovements,
             massage,
             nutritionAndHerbs,
-            thoughtsAndSoul
+            thoughtsAndSoul,
+            consultation,
+            defaultGroup 
 
         }
     }

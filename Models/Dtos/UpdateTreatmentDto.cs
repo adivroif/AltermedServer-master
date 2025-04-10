@@ -9,8 +9,8 @@ namespace AltermedManager.Models.Dtos
         public string treatmentName { get; set; }
         public string treatmentDescription { get; set; }
         public decimal treatmentPrice { get; set; }
-        //public Address treatmentPlace { get; set; }
-        //public Address place { get; set; }
         public List<string> suitCategories { get; set; }
-    }
+        public string treatmentGroup { get; set; }
+        public bool isAdvanced { get; set; }  //if treatment is invasive and more aggressive or not
+        }
 }

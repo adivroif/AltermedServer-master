@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AltermedManager.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250408171827_updateEnumsTobeSerializable")]
-    partial class updateEnumsTobeSerializable
+    [Migration("20250410094626_checkSuitCategoriesIssue")]
+    partial class checkSuitCategoriesIssue
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -83,6 +83,37 @@ namespace AltermedManager.Migrations
                     b.HasIndex("patientId");
 
                     b.ToTable("Appointments");
+                });
+
+            modelBuilder.Entity("AltermedManager.Models.Entities.AppointmentSlots", b =>
+                {
+                    b.Property<int>("slotid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("slotid"));
+
+                    b.Property<string>("date_of_treatment")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("doctorid")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("endtime")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("isbooked")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("starttime")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("slotid");
+
+                    b.ToTable("AppointmentSlots");
                 });
 
             modelBuilder.Entity("AltermedManager.Models.Entities.Doctor", b =>
@@ -233,17 +264,20 @@ namespace AltermedManager.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("treatmentId"));
 
-                    b.Property<string>("date_of_treatment")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<bool>("isAdvanced")
+                        .HasColumnType("boolean");
 
-                    b.PrimitiveCollection<int[]>("suitCategories")
+                    b.PrimitiveCollection<List<string>>("suitCategories")
                         .IsRequired()
-                        .HasColumnType("integer[]");
+                        .HasColumnType("text[]");
 
                     b.Property<string>("treatmentDescription")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.PrimitiveCollection<List<string>>("treatmentGroup")
+                        .IsRequired()
+                        .HasColumnType("text[]");
 
                     b.Property<string>("treatmentName")
                         .IsRequired()
