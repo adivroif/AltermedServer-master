@@ -218,6 +218,37 @@ namespace AltermedManager.Migrations
                     b.ToTable("Patients");
                 });
 
+            modelBuilder.Entity("AltermedManager.Models.Entities.PatientFeedback", b =>
+                {
+                    b.Property<Guid>("feedbackId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("appointmentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("comments")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("createdOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("newSymptoms")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("overallStatus")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("patientId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("feedbackId");
+
+                    b.ToTable("PatientFeedbacks");
+                });
+
             modelBuilder.Entity("AltermedManager.Models.Entities.PatientRequest", b =>
                 {
                     b.Property<Guid>("requestId")
