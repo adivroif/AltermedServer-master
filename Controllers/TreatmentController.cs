@@ -2,6 +2,7 @@
 using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
 using AltermedManager.Models.Enums;
+using AltermedManager.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,105 +13,66 @@ namespace AltermedManager.Controllers
     [ApiController]
     public class TreatmentController : ControllerBase
     {
-        private readonly ApplicationDbContext dbContext;
-        public TreatmentController(ApplicationDbContext dbContext)
+        private readonly TreatmentService _treatmentService;
+        public TreatmentController(TreatmentService treatmentService)
         {
-            this.dbContext = dbContext;
+            _treatmentService = treatmentService;
 
-        }
+            }
         [HttpGet]
         public IActionResult GetAllTreatments()
         {
-            var allTreatments = dbContext.Treatments.ToList();
-            return Ok(allTreatments);
+            return Ok(_treatmentService.GetAllTreatments());
         }
 
 
-
-        [HttpGet("pasport{id}")]
-        public async Task<IActionResult> GetTreatmentById(int id)
-        {
-            var Treatment = await dbContext.Treatments
-                .Where(t => t.treatmentId == id)
-                .FirstOrDefaultAsync();
-            if (Treatment is null)
+        /*
+        [HttpGet("passport{id}")]
+        public async Task<IActionResult> GetTreatmentById(int id)   
             {
+            var treatment = await _treatmentService.GetTreatmentById(id);
+
+            if (treatment is null)
+                {
                 return NotFound();
-            }
-            return Ok(Treatment);
-        }
+                }
+
+            return Ok(treatment);
+            }*/
 
 
         [HttpGet("{id:int}")]
         public IActionResult GetTreatmentByUId(int id)
         {
-            var Treatment = dbContext.Treatments.Find(id);
-            if (Treatment is null)
-            {
+            var treatment = _treatmentService.GetTreatmentByUId(id);
+            if (treatment is null)
+                {
                 return NotFound();
-            }
-            return Ok(Treatment);
+                }
+            return Ok(treatment);
         }
-
-
 
         [HttpPost]
-        public IActionResult AddTreatment(NewTreatmentDto newTreatment)
+        public IActionResult AddTreatment(NewTreatmentDto treatmentDto)
         {
-            var treatmentEntity = new Treatment()
-            {
-                treatmentId = newTreatment.treatmentId,
-                treatmentName = newTreatment.treatmentName,
-                treatmentDescription = newTreatment.treatmentDescription,
-               // treatmentPlace = newTreatment.treatmentPlace,
-                treatmentPrice = newTreatment.treatmentPrice,
-                treatmentDuration = newTreatment.treatmentDuration,
-                suitCategories = newTreatment.suitCategories,
-                treatmentGroup = newTreatment.treatmentGroup,
-                isAdvanced = newTreatment.isAdvanced
-            };
-            dbContext.Treatments.Add(treatmentEntity);
-            dbContext.SaveChanges();
-
-            return Ok(treatmentEntity);
-        }
+            var newTreatment = _treatmentService.AddTreatment(treatmentDto);
+            return Ok(newTreatment);
+            }
 
         [HttpPut]
         [Route("{id:guid}")]
         public IActionResult UpdateTreatment(Guid id, UpdateTreatmentDto updateTreatmentDto)
         {
-            var treatment = dbContext.Treatments.Find(id);
-            if (treatment is null)
-            {
-                return NotFound();
+            var treatment = _treatmentService.UpdateTreatment(id, updateTreatmentDto);
+            return treatment is null ? NotFound() : Ok(treatment);
             }
-            treatment.treatmentId = updateTreatmentDto.treatmentId;
-            treatment.treatmentName = updateTreatmentDto.treatmentName;
-            treatment.treatmentPrice = updateTreatmentDto.treatmentPrice;
-           // treatment.treatmentPlace = updateTreatmentDto.treatmentPlace;
-            treatment.treatmentDescription = updateTreatmentDto.treatmentDescription;
-            treatment.suitCategories = updateTreatmentDto.suitCategories;
-            treatment.treatmentDuration = updateTreatmentDto.treatmentDuration;
-            treatment.treatmentGroup = updateTreatmentDto.treatmentGroup;
-            treatment.isAdvanced = updateTreatmentDto.isAdvanced;
-
-            dbContext.SaveChanges();
-            return Ok(treatment);
-        }
 
 
         [HttpDelete]
         [Route("{id:guid}")]
         public IActionResult DeleteTreatment(Guid id)
         {
-            var treatment = dbContext.Treatments.Find(id);
-            if(treatment is null)
-            {
-                return NotFound();
+            return _treatmentService.DeleteTreatment(id) ? Ok() : NotFound();
             }
-            dbContext.Treatments.Remove(treatment);
-            dbContext.SaveChanges();
-            return Ok("Treatment deleted");
-        }
     }
 }
