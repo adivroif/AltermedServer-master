@@ -1,0 +1,83 @@
+﻿using AltermedManager.Data;
+using AltermedManager.Models.Dtos;
+using AltermedManager.Models.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace AltermedManager.Services
+    {
+    public class TreatmentService
+        {
+        private readonly ApplicationDbContext _context;
+
+        public TreatmentService(ApplicationDbContext context)
+            {
+            _context = context;
+            }
+        public List<Treatment> GetAllTreatments()
+            {
+            return _context.Treatments.ToList();
+            }
+        public Treatment? GetTreatmentByUId(int id)
+            {
+            return _context.Treatments.Find(id);
+            }
+        /*public async Task<Treatment?> GetTreatmentById(int id)
+            {
+            return await _context.Treatments
+                            .Where(t => t.treatmentId == id)
+                            .FirstOrDefaultAsync();
+            }*/
+        public Treatment AddTreatment(NewTreatmentDto newTreatment)
+            {
+            var treatmentEntity = new Treatment()
+                {
+                treatmentId = newTreatment.treatmentId,
+                treatmentName = newTreatment.treatmentName,
+                treatmentDescription = newTreatment.treatmentDescription,
+                treatmentPrice = newTreatment.treatmentPrice,
+                suitCategories = newTreatment.suitCategories,
+                treatmentGroup = newTreatment.treatmentGroup,
+                isAdvanced = newTreatment.isAdvanced
+                };
+            _context.Treatments.Add(treatmentEntity);
+            _context.SaveChanges();
+            return treatmentEntity;
+            }
+        public Treatment? UpdateTreatment(Guid id, UpdateTreatmentDto updateDto)
+            {
+            var treatment = _context.Treatments.Find(id);
+            if (treatment is null)
+                {
+                return null;
+                }
+
+            treatment.treatmentName = updateDto.treatmentName;
+            treatment.treatmentDescription = updateDto.treatmentDescription;
+            treatment.treatmentPrice = updateDto.treatmentPrice;
+            treatment.suitCategories = updateDto.suitCategories;
+            treatment.treatmentGroup = updateDto.treatmentGroup;
+            treatment.isAdvanced = updateDto.isAdvanced;
+            _context.SaveChanges();
+            return treatment;
+            }
+        public bool DeleteTreatment(Guid id)
+            {
+            var treatment = _context.Treatments.Find(id);
+            if (treatment is null)
+                {
+                return false;
+                }
+            _context.Treatments.Remove(treatment);
+            _context.SaveChanges();
+            return true;
+            }
+
+        internal List<Treatment> GetTreatmentByCategory(string? nextGroupName)
+            {
+            throw new NotImplementedException();
+            }
+        }
+    }
+
+
+
