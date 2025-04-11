@@ -72,9 +72,20 @@ namespace AltermedManager.Services
             return true;
             }
 
-        internal List<Treatment> GetTreatmentByCategory(string? nextGroupName)
+        internal List<Treatment> GetTreatmentByCategory(string? groupName)
             {
-            throw new NotImplementedException();
+            if (groupName != null)
+                {
+                var treatments = _context.Treatments
+                    .Where(t => t.treatmentGroup == groupName)
+                    .ToList();
+                return treatments;
+                }
+            else
+                {
+                return null;
+
+                }
             }
         }
     }
