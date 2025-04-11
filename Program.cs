@@ -1,5 +1,6 @@
 
 using AltermedManager.Data;
+using AltermedManager.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,14 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//Register all services in the system
+builder.Services.AddScoped<AltermedManager.Services.AppointmentService>();
+builder.Services.AddScoped<RecommendationService>();
+builder.Services.AddScoped<TreatmentService>();
+builder.Services.AddScoped<PatientService>();
+
+
 
 var app = builder.Build();
 
