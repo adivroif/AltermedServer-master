@@ -82,7 +82,17 @@ namespace AltermedManager.Services
                     {
                     string nextGroupName = (string)nextTreatmentGroup.Element("TreatmentGroupName")?.Value;
                     Console.WriteLine($"Next level treatment group: {nextGroupName} with Level: {nextLevel}");
-                    return _treatmentService.GetTreatmentByCategory(nextGroupName);
+                    List<Treatment> treatments= _treatmentService.GetTreatmentByCategory(nextGroupName);
+                    if (treatments != null)
+                        {
+                        Console.WriteLine($"Found {treatments.Count} treatments in group {nextGroupName}");
+                        return treatments;
+                        }
+                    else
+                        {
+                        Console.WriteLine($"No treatment found for group {nextGroupName}");
+                        return new List<Treatment>();
+                        }
                     }
                 else
                     {
