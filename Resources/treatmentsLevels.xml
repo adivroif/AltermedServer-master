@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TreatmentsLevels>
+  <TreatGroup>
+    <TreatmenGrouptId>1</TreatmenGrouptId>
+    <TreatmentGroupName>bodyMovements</TreatmentGroupName>
+    <GroupLevel>1</GroupLevel>
+  </TreatGroup>
+  <TreatGroup>
+    <TreatmenGrouptId>2</TreatmenGrouptId>
+    <TreatmentGroupName>nutritionAndHerbs</TreatmentGroupName>
+    <GroupLevel>2</GroupLevel>
+  </TreatGroup>
+  <TreatGroup>
+    <TreatmenGrouptId>3</TreatmenGrouptId>
+    <TreatmentGroupName>massage</TreatmentGroupName>
+    <GroupLevel>3</GroupLevel>
+  </TreatGroup>
+  <TreatGroup>
+    <TreatmenGrouptId>4</TreatmenGrouptId>
+    <TreatmentGroupName>acupuncture</TreatmentGroupName>
+    <GroupLevel>4</GroupLevel>
+  </TreatGroup>
+  <TreatGroup>
+    <TreatmenGrouptId>5</TreatmenGrouptId>
+    <TreatmentGroupName>thoughtsAndSoul</TreatmentGroupName>
+    <GroupLevel>5</GroupLevel>
+    
+  </TreatGroup>
+</TreatmentsLevels>
