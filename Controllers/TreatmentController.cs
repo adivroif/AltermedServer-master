@@ -1,6 +1,7 @@
 ﻿using AltermedManager.Data;
 using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
+using AltermedManager.Models.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -40,7 +41,7 @@ namespace AltermedManager.Controllers
         }
 
 
-        [HttpGet("{id:guid}")]
+        [HttpGet("{id:int}")]
         public IActionResult GetTreatmentByUId(int id)
         {
             var Treatment = dbContext.Treatments.Find(id);
@@ -63,7 +64,10 @@ namespace AltermedManager.Controllers
                 treatmentDescription = newTreatment.treatmentDescription,
                // treatmentPlace = newTreatment.treatmentPlace,
                 treatmentPrice = newTreatment.treatmentPrice,
+                treatmentDuration = newTreatment.treatmentDuration,
                 suitCategories = newTreatment.suitCategories,
+                treatmentGroup = newTreatment.treatmentGroup,
+                isAdvanced = newTreatment.isAdvanced
             };
             dbContext.Treatments.Add(treatmentEntity);
             dbContext.SaveChanges();
@@ -86,6 +90,9 @@ namespace AltermedManager.Controllers
            // treatment.treatmentPlace = updateTreatmentDto.treatmentPlace;
             treatment.treatmentDescription = updateTreatmentDto.treatmentDescription;
             treatment.suitCategories = updateTreatmentDto.suitCategories;
+            treatment.treatmentDuration = updateTreatmentDto.treatmentDuration;
+            treatment.treatmentGroup = updateTreatmentDto.treatmentGroup;
+            treatment.isAdvanced = updateTreatmentDto.isAdvanced;
 
             dbContext.SaveChanges();
             return Ok(treatment);

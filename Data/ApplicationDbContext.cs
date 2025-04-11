@@ -15,7 +15,6 @@ namespace AltermedManager.Data
         public DbSet<AppointmentSlots> AppointmentSlots { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
         public DbSet<Treatment> Treatments { get; set; }
-
         public DbSet<PatientFeedback> PatientFeedbacks { get; set; }
 
         }

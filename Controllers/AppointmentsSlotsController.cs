@@ -46,8 +46,8 @@ namespace AltermedManager.Controllers
             return Ok(appointmentSlotsEntity);
         }
 
-        [HttpGet("{id:guid}")]
-        public IActionResult GetAppointmentSlotByUId(Guid id)
+        [HttpGet("{id:int}")]
+        public IActionResult GetAppointmentSlotByUId(int id)
         {
             var slot = dbContext.AppointmentSlots.Find(id);
             if (slot is null)
