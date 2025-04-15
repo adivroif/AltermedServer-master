@@ -31,8 +31,8 @@ namespace AltermedManager.Controllers
         {
             var appointmentSlotsEntity = new AppointmentSlots()
             {
-                //appointmentId = newAppointment.appointmentId,
-                slotid = newAppointmentSlot.slotid,
+                
+                
                 doctorid = newAppointmentSlot.doctorid,
                 date_of_treatment = newAppointmentSlot.date_of_treatment,
                 starttime = newAppointmentSlot.starttime,
