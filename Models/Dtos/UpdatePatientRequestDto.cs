@@ -1,11 +1,10 @@
-﻿using AltermedManager.Models.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using AltermedManager.Models.Entities;
+using AltermedManager.Models.Enums;
 
-namespace AltermedManager.Models.Entities
-{
-    public class PatientRequest
+namespace AltermedManager.Models.Dtos
     {
-        [Key]
+    public class UpdatePatientRequestDto
+        {
         public Guid requestId { get; set; }
         public Guid patientId { get; set; }
         public Guid doctorId { get; set; }
@@ -14,6 +13,5 @@ namespace AltermedManager.Models.Entities
         public RequestType requestType { get; set; }
         public int treatmentId { get; set; }
         public bool isUrgent { get; set; }
-        
     }
-}
+    }
