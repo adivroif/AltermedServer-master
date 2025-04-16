@@ -49,7 +49,6 @@ namespace AltermedManager.Controllers
                 name = newUser.name,
                 id = newUser.id
             };
-
             dbContext.Users.Add(userEntity);
             dbContext.SaveChanges();
 

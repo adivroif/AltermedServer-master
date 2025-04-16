@@ -5,6 +5,7 @@ namespace AltermedManager.Models.Dtos
     {
     public class NewUserDto
         {
+
         public Guid id { get; set; }
         public string name { get; set; }
     }
