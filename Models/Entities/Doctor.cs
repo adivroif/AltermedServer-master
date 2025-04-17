@@ -6,7 +6,7 @@ namespace AltermedManager.Models.Entities
     public class Doctor
         {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        
         public Guid DoctorId { get; set; }
         public string doctorLicense { get; set; }
         public string doctorName { get; set; }

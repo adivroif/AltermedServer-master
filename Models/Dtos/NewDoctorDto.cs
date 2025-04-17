@@ -7,8 +7,7 @@ namespace AltermedManager.Models.Dtos
     public class NewDoctorDto
     {
 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        
         public Guid DoctorId { get; set; }
         public string doctorLicense { get; set; }
         public string doctorName { get; set; }

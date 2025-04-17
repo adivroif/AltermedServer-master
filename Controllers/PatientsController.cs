@@ -54,6 +54,7 @@ namespace AltermedManager.Controllers
         {
             var patientEntity = new Patient()
             {
+                id = newPatient.id,
                 patientID = newPatient.patientID,
                 patientName = newPatient.patientName,
                 patientSurname = newPatient.patientSurname,
