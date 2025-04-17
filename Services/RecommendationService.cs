@@ -9,24 +9,27 @@ namespace AltermedManager.Services
     {
     public class RecommendationService
         {
+        private readonly ApplicationDbContext _context;
         private readonly AppointmentService _appointmentService;
         private readonly TreatmentService _treatmentService;
         private readonly string _filePath = Path.Combine(AppContext.BaseDirectory, "Resources", "treatmentsLevels.xml");
         private OrderedDictionary<string, int> _treatmentsLevelConfiguration = new OrderedDictionary<string, int>();
 
         public RecommendationService(
+            ApplicationDbContext context,
             AppointmentService appointmentService,
             TreatmentService treatmentService)
             {
+            _context = context;
             _appointmentService = appointmentService;
             _treatmentService = treatmentService;
-            loadTreatmentsLevelConfigurationFile(_filePath);
+            LoadTreatmentsLevelConfigurationFile(_filePath);
 
 
 
             }
 
-        private void loadTreatmentsLevelConfigurationFile(string filePath)
+        private void LoadTreatmentsLevelConfigurationFile(string filePath)
             {
             try
                 {
@@ -56,7 +59,7 @@ namespace AltermedManager.Services
                 }
             }
 
-        public List<Treatment> GetRecommendationsByTreatmentGroup(Guid appointmentID)
+        public Recommendation? GetRecommendationsByTreatmentGroup(Guid appointmentID)
             {
             var appointment = _appointmentService.GetAppointmentByUId(appointmentID);
             if (appointment != null)
@@ -71,53 +74,61 @@ namespace AltermedManager.Services
                     if(!treatmentIsAdvanced) //check the same category but another level
                         {
                         Console.WriteLine($"Try to find treatment in the same group - another level");
-                        treatments = findAdvancedTreatmentInCurrentGroup(treatmentGroup);
-
+                        treatments = FindTreatmentsInCurrentGroup(treatmentGroup).Where(t => t.isAdvanced == true).ToList();
                         if (treatments is null || treatments.Count() == 0)
                             {
-                            Console.WriteLine($"No treatment found for treatmentId {appointment.treatmentId} in the same group");
-
+                            Console.WriteLine($"No advanced treatments found for treatmentId {appointment.treatmentId} in the same group");
                             }
-                        else return treatments; //advanced treatment in current group found
-
+                        else return CreateAndSaveNewRecommendation(treatments, appointmentID); //advanced treatment in current group found
                         } 
                     //treatment is advanced or cant found in the same group - check another category
-                     treatments = findTreatmentInAnotherGroup(treatmentGroup);
-                     if (treatments is null)
+                    treatments = FindTreatmentsInAnotherGroup(treatmentGroup);
+                    //try to find from not advanced treatments in another group
+                    if (treatments is null || treatments.Count() == 0)
+                        {
+                        Console.WriteLine($"No treatment found for treatmentId {appointment.treatmentId} in another group");
+                        //TODO: CHECK IN NEXT GROUP MAY BE
+                        return null;
+                        }
+                    List<Treatment> notAdvancedTreatments = treatments.Where(t => t.isAdvanced == false).ToList();
+                    if (notAdvancedTreatments.Count == 0)
                             {
-                            Console.WriteLine($"No treatment found for treatmentId {appointment.treatmentId} in another group");
-                            return new List<Treatment>();
+                            Console.WriteLine($"No light treatments found for treatmentId {appointment.treatmentId} in another group");
+                            List<Treatment> advancedTreatments = treatments.Where(t => t.isAdvanced == true).ToList();
+                            if (advancedTreatments.Count == 0)
+                                {
+                                Console.WriteLine($"No advanced treatments found for treatmentId {appointment.treatmentId} in another group");
+                                return null;
+                                }
+                            return CreateAndSaveNewRecommendation(advancedTreatments, appointmentID);
                             }
-                     return treatments;
-
-                        
+                     return CreateAndSaveNewRecommendation(notAdvancedTreatments, appointmentID);                   
                     }
+                    else
+                        {
+                        Console.WriteLine($"No treatment found for treatmentId {appointment.treatmentId}");
+                        }
+                }
                 else
                     {
-                    Console.WriteLine($"No treatment found for treatmentId {appointment.treatmentId}");
+                     Console.WriteLine($"No appointment found for appointmentId {appointmentID}");
                     }
-                }
-            else
-                {
-                Console.WriteLine($"No appointment found for appointmentId {appointmentID}");
-                }
-            return new List<Treatment>();
+                return null;
             }
 
-        private List<Treatment> findAdvancedTreatmentInCurrentGroup(string treatmentGroup)
+        private List<Treatment> FindTreatmentsInCurrentGroup(string treatmentGroup)
             {
              List<Treatment> treatments = _treatmentService.GetTreatmentByCategory(treatmentGroup);
              if (treatments != null)
                 {
                 Console.WriteLine($"Found {treatments.Count} treatments in group {treatmentGroup}");
-                return treatments.Where(t => t.isAdvanced == true).ToList();
+                return treatments;//.Where(t => t.isAdvanced == true).ToList();
                 }
              return new List<Treatment>();
             }
 
-        public List<Treatment> findTreatmentInAnotherGroup(string currentTreatmentGroup)
+        public List<Treatment> FindTreatmentsInAnotherGroup(string currentTreatmentGroup)
             {
-
 
             if (_treatmentsLevelConfiguration.Count == 0)
                 {
@@ -166,11 +177,34 @@ namespace AltermedManager.Services
                 }
                 return new List<Treatment>();
             }
-        public List<Treatment>? findTreatmentInSameGroup(string treatmentGroup)
+
+        public Recommendation CreateAndSaveNewRecommendation(List<Treatment> treatments, Guid _appointmentId)
             {
-            //TODO: implement this method
-            return null;
+            var recommendation = new Recommendation
+                {
+                //TODO: add id of connected patient
+                patientId = _appointmentService.GetAppointmentByUId(_appointmentId).patientId,
+                appointmentId = _appointmentId,
+                recommendedTreatmentId = ChooseTreatmentForRecommendation(treatments).treatmentId,
+                reason = "General Recommendation",
+                source = "System",
+                isChosen = false
+                };
+
+            _context.Recommendations.Add(recommendation);
+            _context.SaveChanges();
+
+            return recommendation;
+
             }
+
+        private Treatment ChooseTreatmentForRecommendation(List<Treatment> treatments)
+            {
+            
+            return treatments.FirstOrDefault();
+            }
+
+        
 
 
 

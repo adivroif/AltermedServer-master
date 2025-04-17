@@ -20,6 +20,7 @@ namespace AltermedManager.Data
         public DbSet<Doctor> Doctors { get; set; }
         public DbSet<Treatment> Treatments { get; set; }
         public DbSet<PatientFeedback> PatientFeedbacks { get; set; }
+        public DbSet<Recommendation> Recommendations { get; set; }
 
         }
     }
