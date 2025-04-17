@@ -55,7 +55,7 @@ namespace AltermedManager.Controllers
         [HttpGet("{name}")]
         public IActionResult GetTreatmentByUName(string name)
         {
-            var treatment = dbContext.Treatments.FirstOrDefault(t => t.treatmentName == name);
+            var treatment = _treatmentService.GetTreatmentByUName(name);
             if (treatment == null)
             {
                 return NotFound();

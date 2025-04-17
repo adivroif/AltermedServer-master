@@ -1,6 +1,7 @@
 ﻿using AltermedManager.Data;
 using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace AltermedManager.Services
@@ -87,6 +88,14 @@ namespace AltermedManager.Services
 
                 }
             }
+        public Treatment GetTreatmentByUName(string name)
+            {
+            return _context.Treatments.FirstOrDefault(t => t.treatmentName == name);
+            }
+
+
+
+
         }
     }
 
