@@ -24,9 +24,6 @@ namespace AltermedManager.Services
             _appointmentService = appointmentService;
             _treatmentService = treatmentService;
             LoadTreatmentsLevelConfigurationFile(_filePath);
-
-
-
             }
 
         private void LoadTreatmentsLevelConfigurationFile(string filePath)
