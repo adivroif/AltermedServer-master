@@ -1,5 +1,6 @@
 ﻿using AltermedManager.Models.Entities;
 using AltermedManager.Models.Enums;
+using System.Text.Json.Serialization;
 
 namespace AltermedManager.Models.Dtos
     {
@@ -8,6 +9,8 @@ namespace AltermedManager.Models.Dtos
         public Guid requestId { get; set; }
         public Guid patientId { get; set; }
         public Guid doctorId { get; set; }
+
+        [JsonPropertyName("description")]
         public string description { get; set; }
         public DateTime createdOn { get; set; }
         public RequestType requestType { get; set; }
