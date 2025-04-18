@@ -62,7 +62,7 @@ namespace AltermedManager.Controllers
             }
             return Ok(treatment);
         }
-
+        /*
         [HttpGet("{name}")]
         public IActionResult GetTreatmentByUName(string name)
         {
@@ -73,6 +73,7 @@ namespace AltermedManager.Controllers
             }
             return Ok(treatment);
         }
+        */
 
 
 
