@@ -24,15 +24,11 @@ namespace AltermedManager.Controllers
             return Ok(allPatients);
         }
 
-
-
-        [HttpGet("pasport{id}")]
-        public async Task<IActionResult> GetPatientById(string id)
+        [HttpGet("{name}")]
+        public IActionResult GetPatientByName(string name)
         {
-            var patient = await dbContext.Patients
-                .Where(p => p.patientID == id)
-                .FirstOrDefaultAsync();
-            if (patient is null)
+            var patient = dbContext.Patients.FirstOrDefault(p => p.patientName + " " + p.patientSurname == name);
+            if (patient == null)
             {
                 return NotFound();
             }
@@ -58,6 +54,7 @@ namespace AltermedManager.Controllers
         {
             var patientEntity = new Patient()
             {
+                id = newPatient.id,
                 patientID = newPatient.patientID,
                 patientName = newPatient.patientName,
                 patientSurname = newPatient.patientSurname,

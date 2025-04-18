@@ -4,6 +4,7 @@ using AltermedManager.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace AltermedManager.Controllers
 {
@@ -41,6 +42,8 @@ namespace AltermedManager.Controllers
         [HttpPost]
         public IActionResult AddPatientRequest(NewPatientRequestDto newPatientRequest)
         {
+            Console.WriteLine(newPatientRequest.patientId);
+
             var patientRequestEntity = new PatientRequest()
             {
                 requestId = newPatientRequest.requestId,

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using AltermedManager.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AltermedManager.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250412102702_changeOverallStatusTypeInFeedback")]
+    partial class changeOverallStatusTypeInFeedback
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -255,6 +258,9 @@ namespace AltermedManager.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("appointmentId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("createdOn")
                         .HasColumnType("timestamp with time zone");
 
@@ -272,9 +278,6 @@ namespace AltermedManager.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<int>("requestType")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("treatmentId")
                         .HasColumnType("integer");
 
                     b.HasKey("requestId");
@@ -320,21 +323,6 @@ namespace AltermedManager.Migrations
                     b.HasKey("treatmentId");
 
                     b.ToTable("Treatments");
-                });
-
-            modelBuilder.Entity("AltermedManager.Models.Entities.User", b =>
-                {
-                    b.Property<Guid>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("id");
-
-                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("AltermedManager.Models.Entities.Appointment", b =>

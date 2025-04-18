@@ -4,7 +4,7 @@ namespace AltermedManager.Models.Dtos
 {
     public class NewPatientDto
     {
-
+        public Guid id { get; set; }
         public string patientID { get; set; }
         public string patientName { get; set; }
         public string patientSurname { get; set; }

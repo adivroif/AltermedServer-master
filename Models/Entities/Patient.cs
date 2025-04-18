@@ -7,8 +7,7 @@ namespace AltermedManager.Models.Entities
 {
     public class Patient
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]       
         public Guid id { get; set; }
         public string patientID { get; set; }
         public string patientName { get; set; }

@@ -63,6 +63,17 @@ namespace AltermedManager.Controllers
             return Ok(treatment);
         }
 
+        [HttpGet("{name}")]
+        public IActionResult GetTreatmentByUName(string name)
+        {
+            var treatment = dbContext.Treatments.FirstOrDefault(t => t.treatmentName == name);
+            if (treatment == null)
+            {
+                return NotFound();
+            }
+            return Ok(treatment);
+        }
+
 
 
         [HttpPost]
