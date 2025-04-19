@@ -1,4 +1,5 @@
-﻿using AltermedManager.Data;
+﻿using AltermedManager.Controllers;
+using AltermedManager.Data;
 using AltermedManager.Models.Entities;
 using AltermedManager.Models.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -12,20 +13,23 @@ namespace AltermedManager.Services
         private readonly ApplicationDbContext _context;
         private readonly AppointmentService _appointmentService;
         private readonly TreatmentService _treatmentService;
+        private readonly PatientsController _patientsController;
         private readonly string _filePath = Path.Combine(AppContext.BaseDirectory, "Resources", "treatmentsLevels.xml");
         private OrderedDictionary<string, int> _treatmentsLevelConfiguration = new OrderedDictionary<string, int>();
 
         public RecommendationService(
             ApplicationDbContext context,
             AppointmentService appointmentService,
-            TreatmentService treatmentService)
+            TreatmentService treatmentService,
+            PatientsController patientsController
+              )
             {
             _context = context;
             _appointmentService = appointmentService;
             _treatmentService = treatmentService;
+            _patientsController = patientsController;
             LoadTreatmentsLevelConfigurationFile(_filePath);
             }
-
         private void LoadTreatmentsLevelConfigurationFile(string filePath)
             {
             try
@@ -177,16 +181,18 @@ namespace AltermedManager.Services
 
         public Recommendation CreateAndSaveNewRecommendation(List<Treatment> treatments, Guid _appointmentId)
             {
+            var patientId = _appointmentService.GetAppointmentByUId(_appointmentId).patientId;
             var recommendation = new Recommendation
-                {
+            {
                 //TODO: add id of connected patient
-                patientId = _appointmentService.GetAppointmentByUId(_appointmentId).patientId,
+                patientId = patientId,
                 appointmentId = _appointmentId,
                 recommendedTreatmentId = ChooseTreatmentForRecommendation(treatments).treatmentId,
                 reason = "General Recommendation",
                 source = "System",
-                isChosen = false
-                };
+                isChosen = false,
+                Patient = _patientsController.GetPatientByUId(patientId),
+            };
 
             _context.Recommendations.Add(recommendation);
             _context.SaveChanges();

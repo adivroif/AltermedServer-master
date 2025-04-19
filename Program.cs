@@ -1,4 +1,5 @@
 
+using AltermedManager.Controllers;
 using AltermedManager.Data;
 using AltermedManager.Services;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,8 @@ builder.Services.AddScoped<AltermedManager.Services.AppointmentService>();
 builder.Services.AddScoped<RecommendationService>();
 builder.Services.AddScoped<TreatmentService>();
 builder.Services.AddScoped<PatientService>();
+builder.Services.AddScoped<PatientsController>();
+
 
 
 

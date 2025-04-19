@@ -37,14 +37,14 @@ namespace AltermedManager.Controllers
 
 
         [HttpGet("{id:guid}")]
-        public IActionResult GetPatientByUId(Guid id)
+        public Patient? GetPatientByUId(Guid id)
         {
             var patient = dbContext.Patients.Find(id);
             if (patient is null)
             {
-                return NotFound();
+                return null;
             }
-            return Ok(patient);
+            return patient;
         }
 
 
