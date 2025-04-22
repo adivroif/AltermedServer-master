@@ -14,5 +14,7 @@ namespace AltermedManager.Models.Dtos
         public List<string> suitCategories { get; set; }
         public string treatmentGroup { get; set; }
         public bool isAdvanced { get; set; }  //if treatment is invasive and more aggressive or not
+        public int numOfFeedbacks { get; set; }
+        public float score { get; set; }
         }
 }

@@ -38,7 +38,9 @@ namespace AltermedManager.Services
                 treatmentPrice = newTreatment.treatmentPrice,
                 suitCategories = newTreatment.suitCategories,
                 treatmentGroup = newTreatment.treatmentGroup,
-                isAdvanced = newTreatment.isAdvanced
+                isAdvanced = newTreatment.isAdvanced,
+                numOfFeedbacks = newTreatment.numOfFeedbacks,
+                score = newTreatment.score
                 };
             _context.Treatments.Add(treatmentEntity);
             _context.SaveChanges();
@@ -58,6 +60,8 @@ namespace AltermedManager.Services
             treatment.suitCategories = updateDto.suitCategories;
             treatment.treatmentGroup = updateDto.treatmentGroup;
             treatment.isAdvanced = updateDto.isAdvanced;
+            treatment.numOfFeedbacks = updateDto.numOfFeedbacks;
+            treatment.score = updateDto.score;
             _context.SaveChanges();
             return treatment;
             }
