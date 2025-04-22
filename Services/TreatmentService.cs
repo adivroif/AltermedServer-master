@@ -97,6 +97,10 @@ namespace AltermedManager.Services
             return _context.Treatments.FirstOrDefault(t => t.treatmentName == name);
             }
 
+        /*
+         * Function will update the current score of the treatment.
+         * Invokes when a patient leaves feedback on the appointment.
+         */
         internal void UpdateTreatmentScore(float _overallStatus, Guid _appointmentId)
             {
 
@@ -113,7 +117,7 @@ namespace AltermedManager.Services
                     _context.SaveChanges();
 
                     }
-                throw new NotImplementedException();
+                
                 }
             }
         }

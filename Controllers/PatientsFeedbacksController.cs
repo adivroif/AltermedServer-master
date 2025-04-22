@@ -71,9 +71,8 @@ namespace AltermedManager.Controllers
                 createdOn = newPatientFeedback.createdOn,
                 newSymptoms = newPatientFeedback.newSymptoms
             };
-            //dbContext.PatientFeedbacks.Add(patientFeedbackEntity);
-            //dbContext.SaveChanges();
-
+            dbContext.PatientFeedbacks.Add(patientFeedbackEntity);
+            dbContext.SaveChanges();
             _treatmentService.UpdateTreatmentScore(newPatientFeedback.overallStatus, newPatientFeedback.appointmentId);
             return Ok(patientFeedbackEntity);
         }
