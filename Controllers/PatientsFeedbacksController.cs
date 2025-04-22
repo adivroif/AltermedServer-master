@@ -1,6 +1,7 @@
 ﻿using AltermedManager.Data;
 using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
+using AltermedManager.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +15,14 @@ namespace AltermedManager.Controllers
     public class PatientsFeedbacksController : ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
-        public PatientsFeedbacksController(ApplicationDbContext dbContext)
+        private readonly TreatmentService _treatmentService;
+        public PatientsFeedbacksController(ApplicationDbContext dbContext, TreatmentService treatmentService)
         {
             this.dbContext = dbContext;
+            _treatmentService = treatmentService;
 
-        }
+            }
+
         [HttpGet]
         public IActionResult GetAllPatientsFeedbacks()
         {
@@ -67,9 +71,10 @@ namespace AltermedManager.Controllers
                 createdOn = newPatientFeedback.createdOn,
                 newSymptoms = newPatientFeedback.newSymptoms
             };
-            dbContext.PatientFeedbacks.Add(patientFeedbackEntity);
-            dbContext.SaveChanges();
+            //dbContext.PatientFeedbacks.Add(patientFeedbackEntity);
+            //dbContext.SaveChanges();
 
+            _treatmentService.UpdateTreatmentScore(newPatientFeedback.overallStatus, newPatientFeedback.appointmentId);
             return Ok(patientFeedbackEntity);
         }
 
