@@ -97,9 +97,25 @@ namespace AltermedManager.Services
             return _context.Treatments.FirstOrDefault(t => t.treatmentName == name);
             }
 
+        internal void UpdateTreatmentScore(float _overallStatus, Guid _appointmentId)
+            {
 
+            var appointment = _context.Appointments
+                .FirstOrDefault(t => t.appointmentId == _appointmentId);
+            if (appointment != null)
+                {
+                var treatment = _context.Treatments
+                    .FirstOrDefault(t => t.treatmentId == appointment.treatmentId);
+                if (treatment != null)
+                    {
+                    treatment.numOfFeedbacks += 1;
+                    treatment.score = (treatment.score * (treatment.numOfFeedbacks - 1) + _overallStatus) / treatment.numOfFeedbacks;
+                    _context.SaveChanges();
 
-
+                    }
+                throw new NotImplementedException();
+                }
+            }
         }
     }
 
