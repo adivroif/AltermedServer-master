@@ -47,7 +47,7 @@ namespace AltermedManager.Controllers
             var patientRequestEntity = new PatientRequest()
             {
                 requestId = newPatientRequest.requestId,
-                treatmentId = newPatientRequest.treatmentId,
+                appointmentId = newPatientRequest.appointmentId,
                 patientId = newPatientRequest.patientId,
                 createdOn = newPatientRequest.createdOn,
                 description = newPatientRequest.description,
@@ -71,7 +71,7 @@ namespace AltermedManager.Controllers
                 return NotFound();
             }
             patientRequest.requestId = updatePatientRequestsDto.requestId;
-            patientRequest.treatmentId = updatePatientRequestsDto.treatmentId;
+            patientRequest.appointmentId = updatePatientRequestsDto.appointmentId;
             patientRequest.patientId = updatePatientRequestsDto.patientId;
             patientRequest.createdOn = updatePatientRequestsDto.createdOn;
             patientRequest.description = updatePatientRequestsDto.description;

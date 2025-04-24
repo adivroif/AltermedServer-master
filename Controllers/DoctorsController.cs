@@ -59,6 +59,8 @@ namespace AltermedManager.Controllers
                 doctorName = newDoctor.doctorName,
                 doctorSurname = newDoctor.doctorSurname,
                 specList = newDoctor.specList,
+                scheduleId = newDoctor.scheduleId, 
+                placesWorking = newDoctor.placesWorking,
             };
             dbContext.Doctors.Add(doctorEntity);
             dbContext.SaveChanges();
@@ -80,8 +82,8 @@ namespace AltermedManager.Controllers
             doctor.doctorSurname = updateDoctorDto.doctorSurname;
             doctor.doctorLicense = updateDoctorDto.doctorLicense;
             doctor.specList = updateDoctorDto.specList;
-
-
+            doctor.scheduleId = updateDoctorDto.scheduleId;
+            doctor.placesWorking = updateDoctorDto.placesWorking;
 
             dbContext.SaveChanges();
             return Ok(doctor);

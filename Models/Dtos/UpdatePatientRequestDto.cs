@@ -11,7 +11,7 @@ namespace AltermedManager.Models.Dtos
         public string description { get; set; }
         public DateTime createdOn { get; set; }
         public RequestType requestType { get; set; }
-        public int treatmentId { get; set; }
+        public Guid appointmentId { get; set; }
         public bool isUrgent { get; set; }
     }
     }

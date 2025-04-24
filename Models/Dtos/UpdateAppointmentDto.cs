@@ -11,7 +11,8 @@ namespace AltermedManager.Models.Dtos
         public Guid patientId { get; set; }
         public Guid doctorId { get; set; }
         public Guid recordId { get; set; }
-        //public Address place { get; set; }
+        public Address Address { get; set; }
+        public int duration { get; set; }
         public Status statusOfAppointment { get; set; }
         }
     }

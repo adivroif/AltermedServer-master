@@ -44,7 +44,9 @@ namespace AltermedManager.Services
                 patientId = newAppointment.patientId,
                 doctorId = newAppointment.doctorId,
                 recordId = newAppointment.recordId,
-                statusOfAppointment = Status.Free
+                statusOfAppointment = Status.Free,
+                Address = newAppointment.Address,
+                duration = newAppointment.duration,
                 };
 
             _context.Appointments.Add(appointment);
@@ -67,6 +69,8 @@ namespace AltermedManager.Services
             appointment.doctorId = updateDto.doctorId;
             appointment.recordId = updateDto.recordId;
             appointment.statusOfAppointment = updateDto.statusOfAppointment;
+            appointment.Address = updateDto.Address;
+            appointment.duration = updateDto.duration;
 
             _context.SaveChanges();
             return appointment;

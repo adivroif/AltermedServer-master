@@ -13,5 +13,8 @@ namespace AltermedManager.Models.Dtos
         public string doctorName { get; set; }
         public string doctorSurname { get; set; }
         public List<string> specList { get; set; }
+        public string scheduleId { get; set; }
+        public List<string> placesWorking { get; set; }
+
     }
 }
