@@ -20,7 +20,9 @@ namespace AltermedManager.Controllers
         [HttpGet]
         public IActionResult GetAllDoctorsSchedule()
         {
-            var allDoctorsSchedule = dbContext.DoctorSchedule.ToList();
+            var allDoctorsSchedule = dbContext.DoctorSchedule
+                                              .Include(ds => ds.Address)  // טוען את הכתובת גם
+                                              .ToList();
             return Ok(allDoctorsSchedule);
         }
 
@@ -28,17 +30,26 @@ namespace AltermedManager.Controllers
         [HttpGet("{id:guid}")]
         public IActionResult GetDoctorScheduleByUId(Guid id)
         {
-            var schedule = dbContext.DoctorSchedule.Find(id);
-            if (schedule is null)
+            var schedule = dbContext.DoctorSchedule
+                                    .Include(ds => ds.Address)  // טוען גם את הכתובת
+                                    .FirstOrDefault(ds => ds.doctorid == id.ToString());
+
+            if (schedule == null)
             {
                 return NotFound();
             }
             return Ok(schedule);
         }
 
+
         [HttpPost]
-        public IActionResult AddDoctorSchedule(NewDoctorScheduleDto newDoctorSchedule)
+        public IActionResult? AddDoctorSchedule(NewDoctorScheduleDto newDoctorSchedule)
         {
+            Address address = dbContext.Address.Find(newDoctorSchedule.addressId);
+            if (address == null)
+            {
+                return null;
+            }
             var doctorScheduleEntity = new DoctorSchedule()
             {
                 scheduleid = newDoctorSchedule.scheduleid,
@@ -46,8 +57,8 @@ namespace AltermedManager.Controllers
                 date = newDoctorSchedule.date,
                 starttime = newDoctorSchedule.starttime,
                 endtime = newDoctorSchedule.endtime,
-                slotid = newDoctorSchedule.slotid, 
-                address = newDoctorSchedule.address,
+                slotsid = newDoctorSchedule.slotsid,
+                Address = address,
             };
             dbContext.DoctorSchedule.Add(doctorScheduleEntity);
             dbContext.SaveChanges();
@@ -69,8 +80,8 @@ namespace AltermedManager.Controllers
             doctorSchedule.date = updateDoctorScheduleDto.date;
             doctorSchedule.starttime = updateDoctorScheduleDto.starttime;
             doctorSchedule.endtime = updateDoctorScheduleDto.endtime;
-            doctorSchedule.slotid = updateDoctorScheduleDto.slotid;
-            doctorSchedule.address = updateDoctorScheduleDto.address;
+            doctorSchedule.slotsid = updateDoctorScheduleDto.slotsid;
+            doctorSchedule.Address = updateDoctorScheduleDto.Address;
 
             dbContext.SaveChanges();
             return Ok(doctorSchedule);

@@ -2,6 +2,7 @@
 using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
 using AltermedManager.Models.Enums;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace AltermedManager.Services
@@ -14,10 +15,14 @@ namespace AltermedManager.Services
             {
             _context = context;
             }
+
+        [HttpGet]
         public List<Appointment> GetAllAppointments()
-            {
-            return _context.Appointments.ToList();
-            }
+        {
+            return _context.Appointments
+                                              .Include(a => a.Address)  // טוען את הכתובת גם
+                                              .ToList();
+        }
 
         public async Task<List<Appointment>> GetAppointmentsByPatientId(Guid patientId)
             {

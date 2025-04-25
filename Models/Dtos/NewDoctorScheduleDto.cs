@@ -11,8 +11,9 @@ namespace AltermedManager.Models.Dtos
         public string date { get; set; }
         public string starttime { get; set; }
         public string endtime { get; set; }
-        public string slotid { get; set; }
-        public Address address { get; set; }
+        public int[] slotsid { get; set; }
+        public int addressId {  get; set; }
+        public Address Address { get; set; }
 
     }
 }

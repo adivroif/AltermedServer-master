@@ -12,7 +12,7 @@ namespace AltermedManager.Data
 
         public DbSet<Patient> Patients { get; set; }
         public DbSet<PatientRequest> PatientRequest { get; set; }
-
+        public DbSet<Address> Address { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<AppointmentSlots> AppointmentSlots { get; set; }
 
