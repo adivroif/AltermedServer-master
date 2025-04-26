@@ -13,7 +13,7 @@ namespace AltermedManager.Models.Entities
         public string doctorSurname { get; set; }
         public List<string> specList { get; set; }
         public Guid scheduleId { get; set; }
-        public List<string> placesWorking {  get; set; }
+        public List<int> placesWorking {  get; set; }
         
         }
     }

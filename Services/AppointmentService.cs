@@ -36,33 +36,57 @@ namespace AltermedManager.Services
             return appointments;
             }
         public Appointment? GetAppointmentByUId(Guid id)
-            {
-            return _context.Appointments.Find(id);
-            }
+        {
+            return _context.Appointments
+                .Include(a => a.Address) // טוען גם את הכתובת לפי ה-FK
+                .FirstOrDefault(a => a.appointmentId == id); // מחזיר את הפגישה המתאימה
+        }
+
+
+        public Address? GetAddressByAddressId(int id)
+        {
+            return _context.Address.Find(id);
+        }
 
         public Appointment AddAppointment(NewAppointmentDto newAppointment)
+        {
+            // 1. טוענים את הכתובת הקיימת לפי ID
+            var address = _context.Address
+                .FirstOrDefault(a => a.Id == newAppointment.Address.Id);
+
+            if (address == null)
             {
+                throw new Exception("Address not found"); // לא אמור לקרות אם אתה שולח id קיים
+            }
+
+            // 2. מעדכנים את השדות בכתובת
+            address.city = newAppointment.Address.city;
+            address.street = newAppointment.Address.street;
+            address.houseNumber = newAppointment.Address.houseNumber;
+
+            // 3. אין צורך לעשות _context.Add(address); כי הוא כבר קיים
+
+            // 4. יוצרים את ה-Appointment ומפנים רק ל-id של הכתובת
             var appointment = new Appointment
-                {
+            {
                 startSlot = newAppointment.startSlot,
                 treatmentId = newAppointment.treatmentId,
                 patientId = newAppointment.patientId,
                 doctorId = newAppointment.doctorId,
                 recordId = newAppointment.recordId,
-                statusOfAppointment = Status.Free,
-                Address = newAppointment.Address,
+                statusOfAppointment = newAppointment.statusOfAppointment,
+                AddressId = address.Id, // קישור לפי id
                 duration = newAppointment.duration,
-                };
+            };
 
             _context.Appointments.Add(appointment);
+
+            // 5. שומרים גם את העדכון של הכתובת וגם את הפגישה
             _context.SaveChanges();
 
             return appointment;
+        }
 
-
-
-
-            }
         public Appointment? UpdateAppointment(Guid id, UpdateAppointmentDto updateDto)
             {
             var appointment = _context.Appointments.Find(id);
