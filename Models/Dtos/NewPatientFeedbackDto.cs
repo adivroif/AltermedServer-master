@@ -9,5 +9,6 @@
              public string newSymptoms { get; set; }
              public string comments { get; set; }
              public DateTime createdOn { get; set; }
+             public string bodyPart { get; set; }
         }
     }

@@ -69,8 +69,9 @@ namespace AltermedManager.Controllers
                 overallStatus = newPatientFeedback.overallStatus,
                 comments = newPatientFeedback.comments,
                 createdOn = newPatientFeedback.createdOn,
-                newSymptoms = newPatientFeedback.newSymptoms
-            };
+                newSymptoms = newPatientFeedback.newSymptoms,
+                bodyPart = newPatientFeedback.bodyPart
+                };
             dbContext.PatientFeedbacks.Add(patientFeedbackEntity);
             dbContext.SaveChanges();
             _treatmentService.UpdateTreatmentScore(newPatientFeedback.overallStatus, newPatientFeedback.appointmentId);
@@ -92,6 +93,7 @@ namespace AltermedManager.Controllers
             feedback.comments = updatePatientFeedbackDto.comments;
             feedback.createdOn = updatePatientFeedbackDto.createdOn;
             feedback.newSymptoms = updatePatientFeedbackDto.newSymptoms;
+            feedback.bodyPart = updatePatientFeedbackDto.bodyPart;
 
             dbContext.SaveChanges();
             return Ok(feedback);
