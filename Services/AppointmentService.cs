@@ -78,7 +78,6 @@ namespace AltermedManager.Services
                 AddressId = address.Id, // קישור לפי id
                 duration = newAppointment.duration,
             };
-
             _context.Appointments.Add(appointment);
 
             // 5. שומרים גם את העדכון של הכתובת וגם את הפגישה
