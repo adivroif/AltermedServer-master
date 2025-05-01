@@ -32,12 +32,11 @@ namespace AltermedManager.Controllers
             var appointmentSlotsEntity = new AppointmentSlots()
             {
                 
-                
                 doctorid = newAppointmentSlot.doctorid,
                 date_of_treatment = newAppointmentSlot.date_of_treatment,
                 starttime = newAppointmentSlot.starttime,
                 endtime = newAppointmentSlot.endtime,
-                isbooked =  newAppointmentSlot.isbooked
+                isbooked =  newAppointmentSlot.isbooked,
             };
 
             dbContext.AppointmentSlots.Add(appointmentSlotsEntity);
@@ -55,6 +54,18 @@ namespace AltermedManager.Controllers
                 return NotFound();
             }
             return Ok(slot);
+        }
+
+        [HttpDelete]
+        [Route("{id:int}")]
+        public bool DeleteAppointmentSlot(int id)
+        {
+            var appointmentSlot = dbContext.AppointmentSlots.Find(id);
+            if (appointmentSlot == null) return false;
+
+            dbContext.AppointmentSlots.Remove(appointmentSlot);
+            dbContext.SaveChanges();
+            return true;
         }
 
     }

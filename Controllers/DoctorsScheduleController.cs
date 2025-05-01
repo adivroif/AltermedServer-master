@@ -28,18 +28,21 @@ namespace AltermedManager.Controllers
 
 
         [HttpGet("{id:guid}")]
-        public IActionResult GetDoctorScheduleByUId(Guid id)
+        public IActionResult GetDoctorSchedulesByUId(Guid id)
         {
-            var schedule = dbContext.DoctorSchedule
-                                    .Include(ds => ds.Address)  // טוען גם את הכתובת
-                                    .FirstOrDefault(ds => ds.doctorid == id.ToString());
+            var schedules = dbContext.DoctorSchedule
+                                     .Include(ds => ds.Address) // כולל את הכתובת
+                                     .Where(ds => ds.doctorid == id.ToString()) // מסנן לפי doctorId
+                                     .ToList(); // מחזיר רשימה
 
-            if (schedule == null)
+            if (schedules == null || !schedules.Any())
             {
-                return NotFound();
+                return NotFound(); // אם לא נמצאו לוחות שנה
             }
-            return Ok(schedule);
+
+            return Ok(schedules); // מחזיר את הרשימה
         }
+
 
 
         [HttpPost]

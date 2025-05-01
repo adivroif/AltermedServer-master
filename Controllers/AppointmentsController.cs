@@ -47,6 +47,13 @@ namespace AltermedManager.Controllers
             return Ok(appoitment);
         }
 
+        [HttpGet("addressId/{addressId}")]
+        public async Task<IActionResult> GetAddressByAddressId(int addressId)
+        {
+            var result = _appointmentService.GetAddressByAddressId(addressId);
+            return result == null ? NotFound("No address found.") : Ok(result);
+         }
+
 
 
         [HttpPost]
