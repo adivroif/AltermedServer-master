@@ -249,6 +249,11 @@ namespace AltermedManager.Services
 
                 }
             }
+
+        internal void GenerateRecommendationAfterFeedback(PatientFeedback patientFeedbackEntity)
+            {
+            throw new NotImplementedException();
+            }
         }
     }
 
