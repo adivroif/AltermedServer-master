@@ -10,9 +10,13 @@ namespace AltermedManager.Controllers
     public class RecommendationsController : ControllerBase
     {
         private readonly RecommendationService _recommendationService;
-        public RecommendationsController(RecommendationService recommendationService)
+
+        //for test - REMOVEEEEE
+        private readonly TreatmentService _treatmentService;
+        public RecommendationsController(RecommendationService recommendationService, TreatmentService treatmentService)
             {
             _recommendationService = recommendationService;
+            _treatmentService = treatmentService;
             }
 
         [HttpGet("byAppoint/{appointmentId}")] //route parameter
@@ -27,7 +31,17 @@ namespace AltermedManager.Controllers
                 }
             return Ok(recommendation);
             }
-        
+
+     
+
+        [HttpGet("{bodyPart}/{treatmentId}")]
+        public IActionResult testEndPoint(string bodyPart, int treatmentId)
+            {
+            var treatment = _treatmentService.GetTreatmentByUId(treatmentId);
+            var result = _recommendationService.FindTreatmentByBodyPart(bodyPart, treatment);
+            return result == null ? NotFound("No feedback found.") : Ok(result);
+            }
+
 
         }
 }

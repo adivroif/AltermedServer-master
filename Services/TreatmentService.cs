@@ -120,6 +120,11 @@ namespace AltermedManager.Services
                 
                 }
             }
+
+        internal List<Treatment> GetTreatmentByCategoryAndBodyPart(string treatmentGroup, string bodyPart)
+            {
+            throw new NotImplementedException();
+            }
         }
     }
 

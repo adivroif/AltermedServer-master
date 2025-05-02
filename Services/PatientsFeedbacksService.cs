@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AltermedManager.Controllers
     {
-    
+
     public class PatientsFeedbacksService
         {
         private readonly ApplicationDbContext dbContext;
@@ -39,10 +39,10 @@ namespace AltermedManager.Controllers
         public PatientFeedback? GetFeedbackByUId(Guid id)
             {
             return dbContext.PatientFeedbacks.Find(id);
-            
+
             }
 
-              
+
         public PatientFeedback AddPatientFeedback(NewPatientFeedbackDto newPatientFeedback)
             {
             var patientFeedbackEntity = new PatientFeedback()
@@ -67,7 +67,7 @@ namespace AltermedManager.Controllers
             {
             var feedback = dbContext.PatientFeedbacks.Find(id);
             if (feedback is null) return null;
-                
+
             feedback.patientId = updatePatientFeedbackDto.patientId;
             feedback.appointmentId = updatePatientFeedbackDto.appointmentId;
             feedback.overallStatus = updatePatientFeedbackDto.overallStatus;
@@ -89,5 +89,6 @@ namespace AltermedManager.Controllers
             dbContext.SaveChanges();
             return feedback; //return deleted feedback
             }
+
         }
     }
