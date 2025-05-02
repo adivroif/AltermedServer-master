@@ -23,6 +23,7 @@ builder.Services.AddScoped<TreatmentService>();
 builder.Services.AddScoped<PatientService>();
 builder.Services.AddScoped<PatientsController>();
 builder.Services.AddScoped<PatientsFeedbacksService>();
+builder.Services.AddScoped<FeedbackAnalysisServer>();
 
 
 
