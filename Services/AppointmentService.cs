@@ -16,7 +16,6 @@ namespace AltermedManager.Services
             _context = context;
             }
 
-        [HttpGet]
         public List<Appointment> GetAllAppointments()
         {
             return _context.Appointments
@@ -38,8 +37,8 @@ namespace AltermedManager.Services
         public Appointment? GetAppointmentByUId(Guid id)
         {
             return _context.Appointments
-                .Include(a => a.Address) // טוען גם את הכתובת לפי ה-FK
-                .FirstOrDefault(a => a.appointmentId == id); // מחזיר את הפגישה המתאימה
+                .Include(a => a.Address) // load the address related to the appointment by FK
+                .FirstOrDefault(a => a.appointmentId == id); // relevant appointment returned
         }
 
 
@@ -50,23 +49,20 @@ namespace AltermedManager.Services
 
         public Appointment AddAppointment(NewAppointmentDto newAppointment)
         {
-            // 1. טוענים את הכתובת הקיימת לפי ID
+            // load the address by its ID
             var address = _context.Address
                 .FirstOrDefault(a => a.Id == newAppointment.Address.Id);
 
             if (address == null)
             {
-                throw new Exception("Address not found"); // לא אמור לקרות אם אתה שולח id קיים
+                throw new Exception("Address not found"); 
             }
 
-            // 2. מעדכנים את השדות בכתובת
+            //update address fields
             address.city = newAppointment.Address.city;
             address.street = newAppointment.Address.street;
             address.houseNumber = newAppointment.Address.houseNumber;
 
-            // 3. אין צורך לעשות _context.Add(address); כי הוא כבר קיים
-
-            // 4. יוצרים את ה-Appointment ומפנים רק ל-id של הכתובת
             var appointment = new Appointment
             {
                 startSlot = newAppointment.startSlot,
@@ -75,12 +71,10 @@ namespace AltermedManager.Services
                 doctorId = newAppointment.doctorId,
                 recordId = newAppointment.recordId,
                 statusOfAppointment = newAppointment.statusOfAppointment,
-                AddressId = address.Id, // קישור לפי id
+                AddressId = address.Id, 
                 duration = newAppointment.duration,
             };
             _context.Appointments.Add(appointment);
-
-            // 5. שומרים גם את העדכון של הכתובת וגם את הפגישה
             _context.SaveChanges();
 
             return appointment;
