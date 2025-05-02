@@ -9,7 +9,7 @@ namespace AltermedManager.Models.Entities
         public Guid recordID { get; set; }
         public Guid appointmentId { get; set; }
         public Guid patientId { get; set; }
-        public string description { get; set; }
+        public required string description { get; set; }
         public Guid createdBy { get; set; }
         public DateTime createdOn { get; set; }
         public MedicalRecordType recordType { get; set; }

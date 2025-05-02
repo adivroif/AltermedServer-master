@@ -7,7 +7,7 @@ namespace AltermedManager.Models.Entities
         {
 
         public Guid id { get; set; }
-        public string name { get; set; }
+        public required string name { get; set; }
         
         }
     }

@@ -9,18 +9,18 @@ namespace AltermedManager.Models.Entities
     {
         [Key]       
         public Guid id { get; set; }
-        public string patientID { get; set; }
-        public string patientName { get; set; }
-        public string patientSurname { get; set; }
-        public string patientEmail { get; set; }
-        public string patientPhone { get; set; }
+        public required string patientID { get; set; }
+        public required string patientName { get; set; }
+        public required string patientSurname { get; set; }
+        public string? patientEmail { get; set; }
+        public string? patientPhone { get; set; }
         public Address patientAddress { get; set; }
         public string healthProvider { get; set; }
         public char gender { get; set; }
         public DateTime dateOfBirth { get; set; }
-        public List<Appointment> appointments { get; set; }
-        public List<MedicalRecord> medicalRecords { get; set; }
-        public List<PatientRequest> requests { get; set; }
+        public List<Appointment>? appointments { get; set; }
+        public List<MedicalRecord>? medicalRecords { get; set; }
+        public List<PatientRequest>? requests { get; set; }
 
     }
 }

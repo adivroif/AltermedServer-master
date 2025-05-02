@@ -12,9 +12,11 @@ namespace AltermedManager.Models.Entities
         public Guid patientId { get; set; }
         public Guid appointmentId { get; set; }
         public float overallStatus { get; set; }
-        public string newSymptoms { get; set; }               
-        public string comments { get; set; }
+        public string? newSymptoms { get; set; }               
+        public string? comments { get; set; }
         public DateTime createdOn { get; set; }
-        public string bodyPart { get; set; }
+        public required string bodyPart { get; set; }
+
+        
         }
     }
