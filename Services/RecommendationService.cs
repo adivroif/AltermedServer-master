@@ -222,8 +222,8 @@ namespace AltermedManager.Services
                 RecommendedTreatment = _newTreatment
                 };
 
-            //_context.Recommendations.Add(recommendation);
-            //_context.SaveChanges();
+            _context.Recommendations.Add(recommendation);
+            _context.SaveChanges();
             return recommendation;
             }
 
