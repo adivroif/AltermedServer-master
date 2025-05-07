@@ -27,11 +27,15 @@ namespace AltermedManager.Controllers
         [HttpGet("{name}")]
         public IActionResult GetPatientByName(string name)
         {
-            var patient = dbContext.Patients.FirstOrDefault(p => p.patientName + " " + p.patientSurname == name);
+            var patient = dbContext.Patients
+                .Include(p => p.patientAddress) // Load the related patientAddress
+                .FirstOrDefault(p => p.patientName + " " + p.patientSurname == name);
+
             if (patient == null)
             {
                 return NotFound();
             }
+
             return Ok(patient);
         }
 
