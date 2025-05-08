@@ -16,6 +16,9 @@ namespace AltermedManager.Controllers
     public class PatientsFeedbacksController : ControllerBase
         {
         private readonly PatientsFeedbacksService _feedbacksService;
+        private readonly ApplicationDbContext dbContext;
+
+
         public PatientsFeedbacksController(PatientsFeedbacksService feedbacksService)
             {
             _feedbacksService = feedbacksService;
@@ -50,7 +53,18 @@ namespace AltermedManager.Controllers
             return Ok(feedback);
             }
 
-
+        [HttpGet("appointmentId/{appointmentId}")]
+        public async Task<IActionResult> GetPatientFeedbackByAppointmentId(Guid appointmentId)
+        {
+            var feedback = await dbContext.PatientFeedbacks
+                .Where(f => f.appointmentId == appointmentId)
+                .FirstOrDefaultAsync();
+            if (feedback is null)
+            {
+                return NotFound();
+            }
+            return Ok(feedback);
+        }
 
         [HttpPost]
         public IActionResult AddPatientFeedback(NewPatientFeedbackDto newPatientFeedbackDto)

@@ -64,7 +64,12 @@ namespace AltermedManager.Services
                 Console.WriteLine($"Error loading file: {ex.Message}");
                 }
             }
-
+        public List<Recommendation> GetRecommendationsOfPatient(Guid patientId)
+        {
+            return _context.Recommendations
+                .Where(r => r.patientId == patientId)
+                .ToList();
+        }
         public Recommendation? GetRecommendationsByTreatmentGroup(Guid appointmentID)
             {
             var appointment = _appointmentService.GetAppointmentByUId(appointmentID);
