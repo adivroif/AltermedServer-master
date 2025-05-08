@@ -16,7 +16,6 @@ namespace AltermedManager.Controllers
     public class PatientsFeedbacksController : ControllerBase
         {
         private readonly PatientsFeedbacksService _feedbacksService;
-        
         public PatientsFeedbacksController(PatientsFeedbacksService feedbacksService)
             {
             _feedbacksService = feedbacksService;
@@ -78,11 +77,6 @@ namespace AltermedManager.Controllers
             return deleted == null ? NotFound("No feedback found.") : Ok(deleted);
 
             }
-
-
-
-
-
 
         }
     }
