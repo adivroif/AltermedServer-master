@@ -1,6 +1,7 @@
 ﻿using AltermedManager.Models.Entities;
 using AltermedManager.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 
@@ -35,15 +36,10 @@ namespace AltermedManager.Controllers
 
         [HttpGet("byPatient/{PatientId}")] //route parameter
         //change to query param for testing
-
-        public Task<IActionResult> GetRecommendationsOfPatient(Guid patientId)
+        public async Task<IActionResult> GetRecommendationsOfPatient(Guid patientId)
         {
-            List<Recommendation> list = _recommendationService.GetRecommendationsOfPatient(patientId);
-            if (list is null)
-            {
-                return Task.FromResult<IActionResult>(NotFound());
-            }
-            return Task.FromResult<IActionResult>(Ok(list));
+            var result = await _recommendationService.GetRecommendationsOfPatient(patientId);
+            return result == null || !result.Any() ? NotFound("No recommendations found.") : Ok(result);
         }
 
         [HttpGet("{bodyPart}/{treatmentId}")]

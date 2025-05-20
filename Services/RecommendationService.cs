@@ -2,6 +2,8 @@
 using AltermedManager.Data;
 using AltermedManager.Models.Entities;
 using AltermedManager.Models.Enums;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Xml.Linq;
@@ -64,11 +66,19 @@ namespace AltermedManager.Services
                 Console.WriteLine($"Error loading file: {ex.Message}");
                 }
             }
-        public List<Recommendation> GetRecommendationsOfPatient(Guid patientId)
+        public async Task<List<Recommendation>> GetRecommendationsOfPatient(Guid patientId)
         {
-            return _context.Recommendations
+            // ב־.NET בצד השרת
+            var recommendations = _context.Recommendations
+                .Include(r => r.RecommendedTreatment) // כולל את ה־Treatment
                 .Where(r => r.patientId == patientId)
                 .ToList();
+
+            if (recommendations is null || !recommendations.Any())
+            {
+                return null;
+            }
+            return recommendations;
         }
         public Recommendation? GetRecommendationsByTreatmentGroup(Guid appointmentID)
             {

@@ -9,12 +9,12 @@ namespace AltermedManager.Services
     {
 
     public class AppointmentService
-        {
+    {
         private readonly ApplicationDbContext _context;
         public AppointmentService(ApplicationDbContext context)
-            {
+        {
             _context = context;
-            }
+        }
 
         public List<Appointment> GetAllAppointments()
         {
@@ -24,27 +24,33 @@ namespace AltermedManager.Services
         }
 
         public async Task<List<Appointment>> GetAppointmentsByPatientId(Guid patientId)
-            {
+        {
             var appointments = await _context.Appointments
                 .Where(a => a.patientId == patientId)
                 .ToListAsync();
             if (appointments is null || !appointments.Any())
-                {
+            {
                 return null;
-                }
-            return appointments;
             }
+            return appointments;
+        }
+
+        public async Task<List<Appointment>> GetAppointmentsByDoctorId(Guid doctorId)
+        {
+            var appointments = await _context.Appointments
+                .Where(a => a.doctorId == doctorId)
+                .ToListAsync();
+            if (appointments is null || !appointments.Any())
+            {
+                return null;
+            }
+            return appointments;
+        }
         public Appointment? GetAppointmentByUId(Guid id)
         {
             return _context.Appointments
                 .Include(a => a.Address) // load the address related to the appointment by FK
                 .FirstOrDefault(a => a.appointmentId == id); // relevant appointment returned
-        }
-
-
-        public Address? GetAddressByAddressId(int id)
-        {
-            return _context.Address.Find(id);
         }
 
         public Appointment AddAppointment(NewAppointmentDto newAppointment)
@@ -55,7 +61,7 @@ namespace AltermedManager.Services
 
             if (address == null)
             {
-                throw new Exception("Address not found"); 
+                throw new Exception("Address not found");
             }
 
             //update address fields
@@ -71,7 +77,7 @@ namespace AltermedManager.Services
                 doctorId = newAppointment.doctorId,
                 recordId = newAppointment.recordId,
                 statusOfAppointment = newAppointment.statusOfAppointment,
-                AddressId = address.Id, 
+                AddressId = address.Id,
                 duration = newAppointment.duration,
             };
             _context.Appointments.Add(appointment);
@@ -81,7 +87,7 @@ namespace AltermedManager.Services
         }
 
         public Appointment? UpdateAppointment(Guid id, UpdateAppointmentDto updateDto)
-            {
+        {
             var appointment = _context.Appointments.Find(id);
             if (appointment == null) return null;
 
@@ -96,25 +102,17 @@ namespace AltermedManager.Services
 
             _context.SaveChanges();
             return appointment;
-            }
+        }
 
         public bool DeleteAppointment(Guid id)
-            {
+        {
             var appointment = _context.Appointments.Find(id);
             if (appointment == null) return false;
 
             _context.Appointments.Remove(appointment);
             _context.SaveChanges();
             return true;
-            }
-
-
-
-
-
-
-
-
-
         }
+
     }
+}

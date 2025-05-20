@@ -42,6 +42,22 @@ namespace AltermedManager.Controllers
         }
 
 
+        [HttpGet("doctor/{doctorId}")]
+        public IActionResult GetRequestsByDoctorId(string doctorId)
+        {
+            var requests = dbContext.PatientRequest
+                .Where(r => r.doctorId.ToString() == doctorId)
+                .ToList();
+
+            if (requests == null || requests.Count == 0)
+            {
+                return NotFound("לא נמצאו פניות עבור הרופא.");
+            }
+
+            return Ok(requests);
+        }
+
+
         [HttpGet("{id:guid}")]
         public IActionResult GetPatientRequestByUId(Guid id)
         {

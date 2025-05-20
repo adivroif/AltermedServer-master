@@ -1,6 +1,7 @@
 ﻿using AltermedManager.Data;
 using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
+using AltermedManager.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -44,11 +45,10 @@ namespace AltermedManager.Controllers
         }
 
 
-
         [HttpPost]
         public IActionResult? AddDoctorSchedule(NewDoctorScheduleDto newDoctorSchedule)
         {
-            Address address = dbContext.Address.Find(newDoctorSchedule.addressId);
+            Address address = dbContext.Address.Find(newDoctorSchedule.Address.Id);
             if (address == null)
             {
                 return null;

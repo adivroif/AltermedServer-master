@@ -47,7 +47,23 @@ namespace AltermedManager.Controllers
             return Ok(doctor);
         }
 
+        [HttpGet("doctorId/{doctorId}")]
+        public async Task<IActionResult> GetDoctorTreatments(string doctorId)
+        {
+            // שליפת הרופא לפי מזהה
+            var doctor = await dbContext.Doctors
+                .FirstOrDefaultAsync(d => d.DoctorId.ToString() == doctorId);
 
+            if (doctor == null)
+                return NotFound("Doctor not found");
+
+            // שליפת טיפולים שה-id שלהם נמצא ב-specList של הרופא
+            var treatments = await dbContext.Treatments
+                .Where(t => doctor.specList.Contains(t.treatmentName))
+                .ToListAsync();
+
+            return Ok(treatments);
+        }
 
         [HttpPost]
         public IActionResult AddDoctor(NewDoctorDto newDoctor)

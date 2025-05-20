@@ -36,6 +36,12 @@ namespace AltermedManager.Controllers
             return result == null || !result.Any() ? NotFound("No appointments found.") : Ok(result);
             }
 
+        [HttpGet("doctor/{doctorId}")]
+        public async Task<IActionResult> GetAppointmentsByDoctorId(string doctorId)
+        {
+            var result = await _appointmentService.GetAppointmentsByDoctorId(Guid.Parse(doctorId));
+            return result == null || !result.Any() ? NotFound("No appointments found.") : Ok(result);
+        }
 
         [HttpGet("{id:guid}")]
         public IActionResult GetAppointmentByUId(Guid id)
@@ -46,13 +52,6 @@ namespace AltermedManager.Controllers
                 return NotFound();
                 }
             return Ok(appointment);
-            }
-
-        [HttpGet("addressId/{addressId}")]
-        public IActionResult GetAddressByAddressId(int addressId)
-            {
-            var result = _appointmentService.GetAddressByAddressId(addressId);
-            return result == null ? NotFound("No address found.") : Ok(result);
             }
 
 
