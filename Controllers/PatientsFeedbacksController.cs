@@ -92,10 +92,5 @@ namespace AltermedManager.Controllers
 
             }
 
-
-
-
-
-
         }
     }
