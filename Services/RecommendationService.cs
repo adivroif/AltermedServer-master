@@ -80,6 +80,21 @@ namespace AltermedManager.Services
             }
             return recommendations;
         }
+
+        public async Task<List<Recommendation>> GetRecommendationsNotChosenOfPatient(Guid patientId)
+        {
+            // ב־.NET בצד השרת
+            var recommendations = _context.Recommendations
+                .Include(r => r.RecommendedTreatment) // כולל את ה־Treatment
+                .Where(r => r.patientId == patientId && !r.isChosen)
+                .ToList();
+
+            if (recommendations is null || !recommendations.Any())
+            {
+                return null;
+            }
+            return recommendations;
+        }
         public Recommendation? GetRecommendationsByTreatmentGroup(Guid appointmentID)
             {
             var appointment = _appointmentService.GetAppointmentByUId(appointmentID);

@@ -42,6 +42,14 @@ namespace AltermedManager.Controllers
             return result == null || !result.Any() ? NotFound("No recommendations found.") : Ok(result);
         }
 
+        [HttpGet("byPatient/ischosen/{PatientId}")] //route parameter
+        //change to query param for testing
+        public async Task<IActionResult> GetRecommendationsNotChosenOfPatient(Guid patientId)
+        {
+            var result = await _recommendationService.GetRecommendationsNotChosenOfPatient(patientId);
+            return result == null || !result.Any() ? NotFound("No recommendations not chosen found.") : Ok(result);
+        }
+
         [HttpGet("{bodyPart}/{treatmentId}")]
         public IActionResult testEndPoint(string bodyPart, int treatmentId)
             {

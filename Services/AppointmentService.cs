@@ -38,7 +38,7 @@ namespace AltermedManager.Services
         public async Task<List<Appointment>> GetAppointmentsByDoctorId(Guid doctorId)
         {
             var appointments = await _context.Appointments
-                .Where(a => a.doctorId == doctorId)
+                .Where(a => a.doctorId == doctorId).Include(a => a.Address)
                 .ToListAsync();
             if (appointments is null || !appointments.Any())
             {
