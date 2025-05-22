@@ -366,3 +366,5 @@ FodyWeavers.xsd
 # FIREBASE
 firebase-adminsdk.json
 *.secrets
+
+/Secret/
