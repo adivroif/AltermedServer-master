@@ -362,3 +362,7 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /Models/Entities/Treatment.cs
+
+# FIREBASE
+firebase-adminsdk.json
+*.secrets
