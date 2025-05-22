@@ -4,15 +4,23 @@ using AltermedManager.Data;
 using AltermedManager.Services;
 using Microsoft.EntityFrameworkCore;
 
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
+//For firebase
+var firebaseCredentialsPath = Path.Combine(Directory.GetCurrentDirectory(), builder.Configuration["Firebase:CredentialsFile"]);
+FirebaseApp.Create(new AppOptions()
+    {
+    Credential = GoogleCredential.FromFile(firebaseCredentialsPath)
+    });
 
 //***********PRODUCTION***************
 /*
