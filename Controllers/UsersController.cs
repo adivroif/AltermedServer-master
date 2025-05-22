@@ -1,4 +1,5 @@
 ﻿using AltermedManager.Data;
+using AltermedManager.Helpers;
 using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
 using AltermedManager.Models.Enums;
@@ -36,6 +37,42 @@ namespace AltermedManager.Controllers
             }
             return Ok(user);
         }
+
+        [HttpGet("uid/{uid}")]
+        public async Task<IActionResult> GetUserByUidAsync(Guid uid)
+            {
+            var authHeader = Request.Headers["Authorization"].ToString();
+            if (string.IsNullOrEmpty(authHeader))
+                {
+                return Unauthorized("Missing or invalid Authorization header");
+                }
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+
+            var firebaseUid = await FirebaseTokenValidator.VerifyTokenAsync(token);
+            if (firebaseUid == null || firebaseUid != uid.ToString())
+                return Unauthorized("Invalid or mismatched token");
+
+            var user = dbContext.Users.FirstOrDefault(u => u.id == uid);
+            if (user == null)
+                {
+                return NotFound();
+                }
+            return Ok(user);
+            }
+
+
+
+        // -----------------FOR TEST ONLY----------------------
+        [HttpGet("email{email}")]
+        public IActionResult GetUserByEmail(string email)
+            {
+            var user = dbContext.Patients.FirstOrDefault(u => u.patientEmail == email);
+            if (user == null)
+                {
+                return NotFound();
+                }
+            return Ok(user);
+            }
 
 
 
