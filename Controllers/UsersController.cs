@@ -84,8 +84,9 @@ namespace AltermedManager.Controllers
             {
                 //appointmentId = newAppointment.appointmentId,
                 name = newUser.name,
-                id = newUser.id
-            };
+                id = newUser.id,
+                role = newUser.role
+                };
 
             dbContext.Users.Add(userEntity);
             dbContext.SaveChanges();
