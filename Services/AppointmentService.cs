@@ -37,15 +37,22 @@ namespace AltermedManager.Services
 
         public async Task<List<Appointment>> GetAppointmentsByDoctorId(Guid doctorId)
         {
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+            var in30days = today.AddDays(30);
             var appointments = await _context.Appointments
-                .Where(a => a.doctorId == doctorId).Include(a => a.Address)
+                .Where(a => a.doctorId == doctorId &&
+                            a.startAppSlot.date_of_treatment >= today &&
+                            a.startAppSlot.date_of_treatment <= in30days)
+                .Include(a => a.Address)
+                .Include(a => a.startAppSlot)
                 .ToListAsync();
-            if (appointments is null || !appointments.Any())
-            {
+
+            if (appointments == null || !appointments.Any())
+                {
                 return null;
-            }
+                }
             return appointments;
-        }
+            }
         public Appointment? GetAppointmentByUId(Guid id)
         {
             return _context.Appointments
