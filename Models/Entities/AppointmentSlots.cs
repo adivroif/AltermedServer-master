@@ -10,7 +10,7 @@ namespace AltermedManager.Models.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int slotid { get; set; }
         public Guid doctorid { get; set; }
-        public string date_of_treatment { get; set; }
+        public DateOnly date_of_treatment { get; set; }
         public string starttime { get; set; }
         public string endtime { get; set; }
         public int isbooked { get; set; }
