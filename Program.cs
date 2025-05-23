@@ -22,7 +22,7 @@ FirebaseApp.Create(new AppOptions()
     Credential = GoogleCredential.FromFile(firebaseCredentialsPath)
     });
 
-//***********PRODUCTION***************
+//***********PRODUCTION DOCKER***************
 /*
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
@@ -47,7 +47,7 @@ builder.Services.AddScoped<PatientService>();
 builder.Services.AddScoped<PatientsController>();
 builder.Services.AddScoped<PatientsFeedbacksService>();
 builder.Services.AddScoped<FeedbackAnalysisServer>();
-
+//for smartphone testing use this port
 builder.WebHost.UseUrls("http://0.0.0.0:5000"); // Optional: keep HTTP for testing
 
 var app = builder.Build();

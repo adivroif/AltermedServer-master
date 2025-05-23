@@ -8,6 +8,6 @@ namespace AltermedManager.Models.Dtos
 
         public Guid id { get; set; }
         public string name { get; set; }
-        //public required string role { get; set; }
+        public required string role { get; set; }
         }
     }
