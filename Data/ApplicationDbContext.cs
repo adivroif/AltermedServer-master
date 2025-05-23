@@ -2,13 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace AltermedManager.Data
-{
-    public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+    public class ApplicationDbContext : DbContext
         {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+            {
 
-        }
+            }
 
         public DbSet<Patient> Patients { get; set; }
         public DbSet<PatientRequest> PatientRequest { get; set; }
@@ -25,5 +25,14 @@ namespace AltermedManager.Data
         public DbSet<PatientFeedback> PatientFeedbacks { get; set; }
         public DbSet<Recommendation> Recommendations { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+            {
+            modelBuilder.Entity<Appointment>()
+    .HasOne(a => a.startAppSlot)
+    .WithMany()
+    .HasForeignKey(a => a.startSlot);
+
+
+            }
         }
     }
