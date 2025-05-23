@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using AltermedManager.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AltermedManager.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250523123639_UpdateUsersTable")]
+    partial class UpdateUsersTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,8 +96,6 @@ namespace AltermedManager.Migrations
 
                     b.HasIndex("patientId");
 
-                    b.HasIndex("startSlot");
-
                     b.ToTable("Appointments");
                 });
 
@@ -106,8 +107,9 @@ namespace AltermedManager.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("slotid"));
 
-                    b.Property<DateOnly>("date_of_treatment")
-                        .HasColumnType("date");
+                    b.Property<string>("date_of_treatment")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<Guid>("doctorid")
                         .HasColumnType("uuid");
@@ -455,15 +457,7 @@ namespace AltermedManager.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AltermedManager.Models.Entities.AppointmentSlots", "startAppSlot")
-                        .WithMany()
-                        .HasForeignKey("startSlot")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Address");
-
-                    b.Navigation("startAppSlot");
                 });
 
             modelBuilder.Entity("AltermedManager.Models.Entities.DoctorSchedule", b =>
