@@ -1,4 +1,5 @@
-﻿using AltermedManager.Data;
+﻿using System.Globalization;
+using AltermedManager.Data;
 using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
 using AltermedManager.Models.Enums;
@@ -31,18 +32,38 @@ namespace AltermedManager.Controllers
         {
             var appointmentSlotsEntity = new AppointmentSlots()
             {
-                
+
                 doctorid = newAppointmentSlot.doctorid,
                 date_of_treatment = newAppointmentSlot.date_of_treatment,
                 starttime = newAppointmentSlot.starttime,
                 endtime = newAppointmentSlot.endtime,
-                isbooked =  newAppointmentSlot.isbooked,
+                isbooked = newAppointmentSlot.isbooked,
             };
 
             dbContext.AppointmentSlots.Add(appointmentSlotsEntity);
             dbContext.SaveChanges();
 
             return Ok(appointmentSlotsEntity);
+        }
+
+        [HttpPut("{id:int}")] // נניח שה-slotId עובר ב-URL
+        public IActionResult UpdateAppointmentSlot(int id, NewAppointmentSlotsDto updatedSlot)
+        {
+            var existingSlot = dbContext.AppointmentSlots.Find(id);
+            if (existingSlot == null)
+            {
+                return NotFound(); // הסלוט לא נמצא
+            }
+            Console.WriteLine(existingSlot);
+            existingSlot.doctorid = updatedSlot.doctorid;
+            existingSlot.date_of_treatment = updatedSlot.date_of_treatment;
+            existingSlot.starttime = updatedSlot.starttime;
+            existingSlot.endtime = updatedSlot.endtime;
+            existingSlot.isbooked = updatedSlot.isbooked; // זהו השדה שאנו רוצים לעדכן
+            Console.WriteLine("isbooked : " + existingSlot.isbooked);
+
+            dbContext.SaveChanges();
+            return Ok(existingSlot);
         }
 
         [HttpGet("{id:int}")]
@@ -55,6 +76,27 @@ namespace AltermedManager.Controllers
             }
             return Ok(slot);
         }
+
+        [HttpGet("{startTime}/{doctorId}/{date}")]
+        public IActionResult GetSpecificAppointmentSlotByUId(DateOnly date ,Guid doctorId,TimeOnly startTime)
+        {
+
+            Console.WriteLine(startTime);
+            Console.WriteLine(doctorId);
+            Console.WriteLine(date);
+
+
+            var slot = dbContext.AppointmentSlots
+            .Where(s => s.starttime == startTime.ToString() && 
+                        s.doctorid == doctorId && s.date_of_treatment.Month == date.Month && s.date_of_treatment.Year == date.Year && s.date_of_treatment.DayNumber == date.DayNumber).FirstOrDefault();                         
+            if (slot is null)
+            {
+                return NotFound("לא נמצא חריץ פגישה התואם לקריטריונים.");
+            }
+            return Ok(slot);
+        }
+
+        
 
         [HttpDelete]
         [Route("{id:int}")]
