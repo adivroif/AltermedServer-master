@@ -85,6 +85,7 @@ namespace AltermedManager.Controllers
                 description = newPatientRequest.description,
                 doctorId = newPatientRequest.doctorId,
                 isUrgent = newPatientRequest.isUrgent,
+                answerFromDoctor = newPatientRequest.answerFromDoctor,
                 requestType = newPatientRequest.requestType,
             };
             dbContext.PatientRequest.Add(patientRequestEntity);
@@ -109,6 +110,7 @@ namespace AltermedManager.Controllers
             patientRequest.description = updatePatientRequestsDto.description;
             patientRequest.doctorId = updatePatientRequestsDto.doctorId;
             patientRequest.isUrgent = updatePatientRequestsDto.isUrgent;
+            patientRequest.answerFromDoctor = updatePatientRequestsDto.answerFromDoctor;
             patientRequest.requestType = updatePatientRequestsDto.requestType;
 
 
