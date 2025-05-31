@@ -12,7 +12,7 @@ namespace AltermedManager.Models.Dtos
         public DateTime recommendationDate { get; set; } = DateTime.UtcNow;
         public string reason { get; set; }
         public string source { get; set; }
-        public bool isChosen { get; set; }
+        public bool? isChosen { get; set; }
         public Patient Patient { get; set; }
         public Appointment Appointment { get; set; }
         public Treatment RecommendedTreatment { get; set; }
