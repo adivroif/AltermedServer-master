@@ -1,12 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using AltermedManager.Models.Entities;
+using AltermedManager.Models.Enums;
 
-namespace AltermedManager.Models.Entities
+namespace AltermedManager.Models.Dtos
+{
+    public class UpdateRecommendationDto
     {
-    public class Recommendation
-        {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int recommendationId { get; set; }
         public Guid patientId { get; set; }
         public Guid? appointmentId { get; set; }
@@ -15,9 +13,6 @@ namespace AltermedManager.Models.Entities
         public string? reason { get; set; }
         public string? source { get; set; }
         public bool? isChosen { get; set; }
-        public required Patient Patient { get; set; }
-        public Appointment? Appointment { get; set; }
         public required Treatment RecommendedTreatment { get; set; }
-
-        }
     }
+}

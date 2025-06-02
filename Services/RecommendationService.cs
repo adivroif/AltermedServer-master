@@ -1,11 +1,13 @@
 ﻿using AltermedManager.Controllers;
 using AltermedManager.Data;
+using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
 using AltermedManager.Models.Enums;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Numerics;
 using System.Xml.Linq;
 
 namespace AltermedManager.Services
@@ -81,12 +83,39 @@ namespace AltermedManager.Services
             return recommendations;
         }
 
-        public async Task<List<Recommendation>> GetRecommendationsNotChosenOfPatient(Guid patientId)
+        public async Task<Recommendation> GetRecommendation(int recommendationId)
+        {
+            var recommendation = _context.Recommendations.Find(recommendationId);
+
+            return recommendation;
+        }
+        public async Task<Recommendation> UpdateRecommendation(int recommendationId,UpdateRecommendationDto updateRecommendationDto)
+        {
+
+            var recommendation = _context.Recommendations.Find(recommendationId);
+            if (recommendation is null)
+            {
+                return null;
+            }
+            recommendation.recommendationId = updateRecommendationDto.recommendationId;
+            recommendation.patientId = updateRecommendationDto.patientId;
+            recommendation.appointmentId = updateRecommendationDto.appointmentId;
+            recommendation.RecommendedTreatment = updateRecommendationDto.RecommendedTreatment;
+            recommendation.recommendationDate = updateRecommendationDto.recommendationDate;
+            recommendation.reason = updateRecommendationDto.reason;
+            recommendation.source = updateRecommendationDto.source;
+            recommendation.isChosen = updateRecommendationDto.isChosen;
+
+            _context.SaveChanges();
+            return recommendation;
+        }
+
+    public async Task<List<Recommendation>> GetRecommendationsNotChosenOfPatient(Guid patientId)
         {
             // ב־.NET בצד השרת
             var recommendations = _context.Recommendations
                 .Include(r => r.RecommendedTreatment) // כולל את ה־Treatment
-                .Where(r => r.patientId == patientId && !r.isChosen)
+                .Where(r => r.patientId == patientId && (r.isChosen == false || r.isChosen == null))
                 .ToList();
 
             if (recommendations is null || !recommendations.Any())
@@ -247,7 +276,7 @@ namespace AltermedManager.Services
                 recommendedTreatmentId = _newTreatment.treatmentId,
                 reason = "General Recommendation",
                 source = _reason,
-                isChosen = false,
+                isChosen = null,
                 Patient = patient,
                 RecommendedTreatment = _newTreatment
                 };
