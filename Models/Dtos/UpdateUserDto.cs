@@ -6,6 +6,7 @@ namespace AltermedManager.Models.Dtos
     public class UpdateUserDto
         {
         public Guid id { get; set; }
+        public string firebaseId { get; set; }
         public string name { get; set; }
         public string role { get; set; }
         }
