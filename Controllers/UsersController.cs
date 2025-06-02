@@ -114,6 +114,7 @@ namespace AltermedManager.Controllers
                 //appointmentId = newAppointment.appointmentId,
                 name = newUser.name,
                 firebaseId = newUser.firebaseId,
+                msgToken = newUser.msgToken ?? string.Empty, // Default to empty string if null
                 id = newUser.id,
                 role = newUser.role
                 };

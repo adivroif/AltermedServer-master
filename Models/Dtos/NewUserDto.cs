@@ -8,6 +8,7 @@ namespace AltermedManager.Models.Dtos
 
         public Guid id { get; set; }
         public string firebaseId { get; set; }
+        public required string msgToken { get; set; }
         public string name { get; set; }
         public required string role { get; set; }
         }
