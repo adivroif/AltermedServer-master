@@ -38,8 +38,30 @@ namespace AltermedManager.Controllers
             return Ok(user);
         }
 
-        [HttpGet("uid/{uid}")]
-        public async Task<IActionResult> GetUserByUidAsync(Guid uid)
+        [HttpGet("uid/{uuid}")]
+        public async Task<IActionResult> GetUserByUidAsync(Guid uuid)
+            {
+            var authHeader = Request.Headers["Authorization"].ToString();
+            if (string.IsNullOrEmpty(authHeader))
+                {
+                return Unauthorized("Missing or invalid Authorization header");
+                }
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+
+            var firebaseUid = await FirebaseTokenValidator.VerifyTokenAsync(token);
+            if (firebaseUid == null || firebaseUid != uuid.ToString())
+                return Unauthorized("Invalid or mismatched token");
+
+            var user = dbContext.Users.FirstOrDefault(u => u.id == uuid);
+            if (user == null)
+                {
+                return NotFound();
+                }
+            return Ok(user);
+            }
+
+        [HttpGet("fuid/{uid}")]
+        public async Task<IActionResult> GetUserByFirebaseIdAsync(String uid)
             {
             var authHeader = Request.Headers["Authorization"].ToString();
             if (string.IsNullOrEmpty(authHeader))
@@ -51,15 +73,22 @@ namespace AltermedManager.Controllers
             var firebaseUid = await FirebaseTokenValidator.VerifyTokenAsync(token);
             if (firebaseUid == null || firebaseUid != uid.ToString())
                 return Unauthorized("Invalid or mismatched token");
+            /*
+            var user = new User()
+                {
+                name = "בדיקה  בדיקה",
+                firebaseId = "edr93Eb4nmPVRNtoRgeV0ukNIiR2",
+                id = System.Guid.Parse("da66b18d-fdb4-4ea4-acc6-6c67a4570cd0"),
+                role = UserRoleConst.PATIENT
 
-            var user = dbContext.Users.FirstOrDefault(u => u.id == uid);
+                };*/
+            var user = dbContext.Users.FirstOrDefault(u => u.firebaseId == uid);
             if (user == null)
                 {
                 return NotFound();
                 }
             return Ok(user);
             }
-
 
 
         // -----------------FOR TEST ONLY----------------------
@@ -84,6 +113,7 @@ namespace AltermedManager.Controllers
             {
                 //appointmentId = newAppointment.appointmentId,
                 name = newUser.name,
+                firebaseId = newUser.firebaseId,
                 id = newUser.id,
                 role = newUser.role
                 };
