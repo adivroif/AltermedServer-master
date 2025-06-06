@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace AltermedManager.Services
@@ -20,6 +21,7 @@ namespace AltermedManager.Services
         private readonly PatientsController _patientsController;
         //private readonly PatientsFeedbacksService _feedbackService;
         private readonly FeedbackAnalysisServer _feedbackAnalysis;
+        private readonly INotificationsService _notificationsService;
         private readonly string _filePath = Path.Combine(AppContext.BaseDirectory, "Resources", "treatmentsLevels.xml");
         private OrderedDictionary<string, int> _treatmentsLevelConfiguration = new OrderedDictionary<string, int>();
 
@@ -28,7 +30,8 @@ namespace AltermedManager.Services
             AppointmentService appointmentService,
             TreatmentService treatmentService,
             PatientsController patientsController,
-            FeedbackAnalysisServer feedbackAnalysis
+            FeedbackAnalysisServer feedbackAnalysis,
+            INotificationsService notificationsService
               )
             {
             _context = context;
@@ -36,6 +39,7 @@ namespace AltermedManager.Services
             _treatmentService = treatmentService;
             _patientsController = patientsController;
             _feedbackAnalysis = feedbackAnalysis;
+            _notificationsService = notificationsService;
             LoadTreatmentsLevelConfigurationFile(_filePath);
             }
         private void LoadTreatmentsLevelConfigurationFile(string filePath)
@@ -124,7 +128,7 @@ namespace AltermedManager.Services
             }
             return recommendations;
         }
-        public Recommendation? GetRecommendationsByTreatmentGroup(Guid appointmentID)
+        public async Task<Recommendation?> GetRecommendationsByTreatmentGroupAsync(Guid appointmentID)
             {
             var appointment = _appointmentService.GetAppointmentByUId(appointmentID);
             if (appointment != null)
@@ -144,7 +148,7 @@ namespace AltermedManager.Services
                             {
                             Console.WriteLine($"No advanced treatments found for treatmentId {appointment.treatmentId} in the same group");
                             }
-                        else return CreateAndSaveNewRecommendation(treatments.FirstOrDefault(), appointmentID, "More advanced treatment"); //advanced treatment in current group found
+                        else return await CreateAndSaveNewRecommendation(treatments.FirstOrDefault(), appointmentID, "More advanced treatment"); //advanced treatment in current group found
                         }
                     //treatment is advanced or cant found in the same group - check another category
                     treatments = FindTreatmentsInAnotherGroup(treatmentGroup);
@@ -165,9 +169,10 @@ namespace AltermedManager.Services
                             Console.WriteLine($"No advanced treatments found for treatmentId {appointment.treatmentId} in another group");
                             return null;
                             }
-                        return CreateAndSaveNewRecommendation(advancedTreatments.FirstOrDefault(), appointmentID, "More advanced treatment in another group");
+                        return await CreateAndSaveNewRecommendation(advancedTreatments.FirstOrDefault(), appointmentID, "More advanced treatment in another group");
                         }
-                    return CreateAndSaveNewRecommendation(notAdvancedTreatments.FirstOrDefault(), appointmentID, "Treatment in another group");
+                    var res = await CreateAndSaveNewRecommendation(notAdvancedTreatments.FirstOrDefault(), appointmentID, "Treatment in another group");
+                    return res;
                     }
                 else
                     {
@@ -255,7 +260,7 @@ namespace AltermedManager.Services
          * Function will create new recommendation and save it to the database.
          * It will be used when treatment found.
          */
-        public Recommendation CreateAndSaveNewRecommendation(Treatment _newTreatment, Guid _appointmentId, string _reason)
+        public async Task<Recommendation> CreateAndSaveNewRecommendation(Treatment _newTreatment, Guid _appointmentId, string _reason)
             {
             var appointment = _appointmentService.GetAppointmentByUId(_appointmentId);
             if (appointment == null)
@@ -281,8 +286,20 @@ namespace AltermedManager.Services
                 RecommendedTreatment = _newTreatment
                 };
 
+            
+
             _context.Recommendations.Add(recommendation);
             _context.SaveChanges();
+            _context.Entry(recommendation).Reload(); // Reload to get the generated ID and other properties
+
+            // Send notification to doctor for approval
+            Guid doctorId = appointment.doctorId;
+            string msgToken = _context.Users
+                .Where(u => u.id == doctorId)
+                .Select(u => u.msgToken)
+                .FirstOrDefault();
+            int newRecommendationId = recommendation.recommendationId;
+            await _notificationsService.SendDoctorRecommendationApprovalRequestAsync(doctorId, recommendation, msgToken);
             return recommendation;
             }
 
@@ -334,7 +351,7 @@ namespace AltermedManager.Services
                     //2. find treatment based on treatment group and isAdvanced or not (without body part + score)
                     // if bodyTreatment is null or empty
                     // var groupTreatments = FindTreatmentsByGroup()
-                    GetRecommendationsByTreatmentGroup(patientFeedbackEntity.appointmentId);
+                    GetRecommendationsByTreatmentGroupAsync(patientFeedbackEntity.appointmentId);
                     }
                 else
                     {

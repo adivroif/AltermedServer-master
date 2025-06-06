@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +17,22 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
+
+
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[] { new CultureInfo("en"), new CultureInfo("he") };
+    options.DefaultRequestCulture = new RequestCulture("he");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+});
+
+
+
+
+
 
 //For firebase
 var firebaseCredentialsPath = Path.Combine(Directory.GetCurrentDirectory(), builder.Configuration["Firebase:CredentialsFile"]);
@@ -47,6 +66,8 @@ builder.Services.AddScoped<PatientService>();
 builder.Services.AddScoped<PatientsController>();
 builder.Services.AddScoped<PatientsFeedbacksService>();
 builder.Services.AddScoped<FeedbackAnalysisServer>();
+builder.Services.AddScoped<INotificationsService, NotificationsService>();
+
 //for smartphone testing use this port
 builder.WebHost.UseUrls("http://0.0.0.0:5000"); // Optional: keep HTTP for testing
 
@@ -61,6 +82,8 @@ var app = builder.Build();
 
 
 //app.UseHttpsRedirection();
+var locOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
+app.UseRequestLocalization(locOptions?.Value);
 
 app.UseAuthorization();
 
