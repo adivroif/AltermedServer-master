@@ -137,6 +137,7 @@ namespace AltermedManager.Controllers
                 return NotFound();
             }
             user.id = updateUser.id;
+            user.firebaseId = 
             user.name = updateUser.name;
             dbContext.SaveChanges();
             return Ok(user);
@@ -156,5 +157,54 @@ namespace AltermedManager.Controllers
             dbContext.SaveChanges();
             return Ok("User deleted");
         }
+
+
+
+
+        public class UpdateTokenRequest
+            {
+            public string Uid { get; set; }
+            public string Token { get; set; }
+            }
+
+        [HttpPost("update-token")]
+        public async Task<IActionResult> UpdateFcmToken([FromBody] UpdateTokenRequest request)
+            {
+            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.id.ToString() == request.Uid);
+            if (user == null)
+                return NotFound("User not found");
+
+            user.msgToken = request.Token;
+            await dbContext.SaveChangesAsync();
+
+            return Ok("Token updated");
+            }
+
+        //================================================================
+        //                     Notifications Endpoints
+        //================================================================
+
+        [HttpGet("by-user/{userId}")]
+        public async Task<IActionResult> GetNotificationsByUser(Guid userId)
+            {
+            var notifs = await dbContext.StoredNotifications
+                .Where(n => n.userId == userId)
+                .OrderByDescending(n => n.createdAt)
+                .ToListAsync();
+
+            return Ok(notifs);
+            }
+
+        [HttpPatch("{id}/read")]
+        public async Task<IActionResult> MarkAsRead(int id)
+            {
+            var notif = await dbContext.StoredNotifications.FindAsync(id);
+            if (notif == null) return NotFound();
+
+            notif.isRead = true;
+            await dbContext.SaveChangesAsync();
+
+            return Ok();
+            }
+        }
     }
-}
