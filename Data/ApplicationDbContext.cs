@@ -24,6 +24,8 @@ namespace AltermedManager.Data
         public DbSet<Treatment> Treatments { get; set; }
         public DbSet<PatientFeedback> PatientFeedbacks { get; set; }
         public DbSet<Recommendation> Recommendations { get; set; }
+        public DbSet<StoredNotification> StoredNotifications { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
             {
@@ -31,6 +33,9 @@ namespace AltermedManager.Data
     .HasOne(a => a.startAppSlot)
     .WithMany()
     .HasForeignKey(a => a.startSlot);
+
+    modelBuilder.Entity<StoredNotification>()
+    .HasIndex(n => new { n.userId, n.isRead });
 
 
             }
