@@ -26,9 +26,9 @@ namespace AltermedManager.Controllers
         [HttpGet("byAppoint/{appointmentId}")] //route parameter
         //change to query param for testing
 
-        public async Task<IActionResult> GetRecommendationByAppointmentId([DefaultValue("0195a9f7-f04b-7b77-8c05-be3d51536903")] Guid appointmentId)
+        public async Task<IActionResult> GetRecommendationByAppointmentId([DefaultValue("01968274-f546-7ab7-a71e-6c5eb35f2a4e")] Guid appointmentId)
             {
-            var recommendation = _recommendationService.GetRecommendationsByTreatmentGroup(appointmentId);
+            var recommendation = await _recommendationService.GetRecommendationsByTreatmentGroupAsync(appointmentId);
             if (recommendation is null)
                 {
                 return NotFound();
