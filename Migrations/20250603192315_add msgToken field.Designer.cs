@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using AltermedManager.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AltermedManager.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250603192315_add msgToken field")]
+    partial class addmsgTokenfield
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -383,38 +386,6 @@ namespace AltermedManager.Migrations
                     b.HasIndex("recommendedTreatmentId");
 
                     b.ToTable("Recommendations");
-                });
-
-            modelBuilder.Entity("AltermedManager.Models.Entities.StoredNotification", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<string>("body")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("createdAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("isRead")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("userId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("userId", "isRead");
-
-                    b.ToTable("StoredNotifications");
                 });
 
             modelBuilder.Entity("AltermedManager.Models.Entities.Treatment", b =>

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using AltermedManager.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AltermedManager.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250606161612_updateNotificationEntity")]
+    partial class updateNotificationEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -414,7 +417,7 @@ namespace AltermedManager.Migrations
 
                     b.HasIndex("userId", "isRead");
 
-                    b.ToTable("StoredNotifications");
+                    b.ToTable("SavedNotifications");
                 });
 
             modelBuilder.Entity("AltermedManager.Models.Entities.Treatment", b =>
