@@ -8,9 +8,9 @@ namespace AltermedManager.Models.Entities
         [Key]
         
         public Guid DoctorId { get; set; }
-        public string doctorLicense { get; set; }
-        public string doctorName { get; set; }
-        public string doctorSurname { get; set; }
+        public required string doctorLicense { get; set; }
+        public required string doctorName { get; set; }
+        public required string doctorSurname { get; set; }
         public List<string> specList { get; set; }
         public Guid scheduleId { get; set; }
         public List<int> placesWorking {  get; set; }

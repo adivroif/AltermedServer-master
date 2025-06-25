@@ -159,7 +159,7 @@ namespace AltermedManager.Services
                         //TODO: CHECK IN NEXT GROUP MAY BE
                         return null;
                         }
-                    List<Treatment> notAdvancedTreatments = treatments.Where(t => t.isAdvanced == false).ToList();
+                    List<Treatment> notAdvancedTreatments = [.. treatments.Where(t => t.isAdvanced == false)]; //ToList simplifier
                     if (notAdvancedTreatments.Count == 0)
                         {
                         Console.WriteLine($"No light treatments found for treatmentId {appointment.treatmentId} in another group");
