@@ -72,7 +72,7 @@ namespace AltermedManager.Controllers
         [Route("recommendationId/{recommendationId}")]
         public IActionResult UpdateRecommendation(int recommendationId, UpdateRecommendationDto updateRecommendationDto)
         {
-            var result = _recommendationService.UpdateRecommendation(recommendationId, updateRecommendationDto);
+            var result = _recommendationService.UpdateRecommendation(recommendationId, updateRecommendationDto);         
             return result == null ? NotFound("Failed in update recommendation.") : Ok(result);
         }
 

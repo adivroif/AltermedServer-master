@@ -17,5 +17,6 @@ namespace AltermedManager.Models.Entities
         public string body { get; set; }
         public bool isRead { get; set; }
         public DateTime createdAt { get; set; } = DateTime.UtcNow;
+        public string type { get; set; }
         }
     }

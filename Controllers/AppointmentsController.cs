@@ -40,7 +40,7 @@ namespace AltermedManager.Controllers
         public async Task<IActionResult> GetAppointmentsByDoctorId(string doctorId)
         {
             var result = await _appointmentService.GetAppointmentsByDoctorId(Guid.Parse(doctorId));
-            return result == null || !result.Any() ? NotFound("No appointments found.") : Ok(result);
+            return result == null || !result.Any() ? NotFound("No appointments in range of 30 days found.") : Ok(result);
         }
 
         [HttpGet("{id:guid}")]

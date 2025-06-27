@@ -111,6 +111,19 @@ namespace AltermedManager.Services
             recommendation.isChosen = updateRecommendationDto.isChosen;
 
             _context.SaveChanges();
+
+            bool approved = (bool)updateRecommendationDto.isChosen;
+            if (approved)
+                {
+                //send notification to the patient
+                Guid patientId = updateRecommendationDto.patientId;
+                string? msgToken = _context.Users
+                    .Where(u => u.id == patientId)
+                    .Select(u => u.msgToken)
+                    .FirstOrDefault();
+                await _notificationsService.SendNewRecommendationToPatientAsync(patientId, recommendation, msgToken);
+
+                }   
             return recommendation;
         }
 
@@ -284,9 +297,7 @@ namespace AltermedManager.Services
                 isChosen = null,
                 Patient = patient,
                 RecommendedTreatment = _newTreatment
-                };
-
-            
+                };            
 
             _context.Recommendations.Add(recommendation);
             _context.SaveChanges();

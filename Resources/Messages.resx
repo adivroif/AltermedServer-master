@@ -123,8 +123,26 @@
   <data name="NewNotification" xml:space="preserve">
     <value>New notification</value>
   </data>
+  <data name="NewRecommendationForPatient" xml:space="preserve">
+    <value>New recommendation received</value>
+  </data>
+  <data name="NewRecommendationToDoctorForApprove" xml:space="preserve">
+    <value>Please check new recommendation for patient</value>
+  </data>
   <data name="NewRecommendationToDoctorTitle" xml:space="preserve">
     <value>New recommendation created</value>
+  </data>
+  <data name="NewRequest" xml:space="preserve">
+    <value>New request</value>
+  </data>
+  <data name="NewRequestFromPatientToDoctor" xml:space="preserve">
+    <value>You have new request from patient</value>
+  </data>
+  <data name="NewResponse" xml:space="preserve">
+    <value>New Response</value>
+  </data>
+  <data name="NewResponseFromDoctorToPatient" xml:space="preserve">
+    <value>You have new response from doctor</value>
   </data>
   <data name="RecommendationPendingForApprove" xml:space="preserve">
     <value>New recommendation waits approval</value>

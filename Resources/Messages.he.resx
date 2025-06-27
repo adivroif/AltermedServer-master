@@ -123,8 +123,26 @@
   <data name="NewNotification" xml:space="preserve">
     <value>הודעה חדשה</value>
   </data>
+  <data name="NewRecommendationForPatient" xml:space="preserve">
+    <value>התקבלה המלצה על טיפול חדש</value>
+  </data>
+  <data name="NewRecommendationToDoctorForApprove" xml:space="preserve">
+    <value>נא לבדוק המלצה חדשה למטופל</value>
+  </data>
   <data name="NewRecommendationToDoctorTitle" xml:space="preserve">
     <value>המלצה חדשה התקבלה</value>
+  </data>
+  <data name="NewRequest" xml:space="preserve">
+    <value>בקשה חדשה</value>
+  </data>
+  <data name="NewRequestFromPatientToDoctor" xml:space="preserve">
+    <value>התקבלה בקשה חדשה ממטופל</value>
+  </data>
+  <data name="NewResponse" xml:space="preserve">
+    <value>תגובה חדשה</value>
+  </data>
+  <data name="NewResponseFromDoctorToPatient" xml:space="preserve">
+    <value>התקבלה תשובה חדשה מהרופא</value>
   </data>
   <data name="RecommendationPendingForApprove" xml:space="preserve">
     <value>המלצה למטופל מחקה לאישור</value>

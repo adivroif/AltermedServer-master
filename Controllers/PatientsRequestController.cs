@@ -1,6 +1,7 @@
 ﻿using AltermedManager.Data;
 using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
+using AltermedManager.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,11 +14,13 @@ namespace AltermedManager.Controllers
     public class PatientsRequestController : ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
-        public PatientsRequestController(ApplicationDbContext dbContext)
+        private readonly INotificationsService _notificationsService;
+        public PatientsRequestController(ApplicationDbContext dbContext, INotificationsService notificationsService)
         {
             this.dbContext = dbContext;
+            _notificationsService = notificationsService;
 
-        }
+            }
         [HttpGet]
         public IActionResult GetAllPatientsRequests()
         {
@@ -72,7 +75,7 @@ namespace AltermedManager.Controllers
 
 
         [HttpPost]
-        public IActionResult AddPatientRequest(NewPatientRequestDto newPatientRequest)
+        public async Task<IActionResult> AddPatientRequestAsync(NewPatientRequestDto newPatientRequest)
         {
             Console.WriteLine(newPatientRequest.patientId);
 
@@ -90,13 +93,22 @@ namespace AltermedManager.Controllers
             };
             dbContext.PatientRequest.Add(patientRequestEntity);
             dbContext.SaveChanges();
+            dbContext.Entry(patientRequestEntity).Reload();
 
+            // Send notification to doctor about new request from patient
+            Guid doctorId = patientRequestEntity.doctorId;
+            string? msgToken = dbContext.Users
+                .Where(u => u.id == doctorId)
+                .Select(u => u.msgToken)
+                .FirstOrDefault();
+            Guid newRequestId = patientRequestEntity.requestId;
+            await _notificationsService.SendNewPatientRequestToDoctor(doctorId, patientRequestEntity, msgToken);
             return Ok(patientRequestEntity);
         }
 
         [HttpPut]
         [Route("{id:guid}")]
-        public IActionResult UpdatePatientRequest(Guid id, UpdatePatientRequestDto updatePatientRequestsDto)
+        public async Task<IActionResult> UpdatePatientRequestAsync(Guid id, UpdatePatientRequestDto updatePatientRequestsDto)
         {
             var patientRequest = dbContext.PatientRequest.Find(id);
             if (patientRequest is null)
@@ -113,8 +125,18 @@ namespace AltermedManager.Controllers
             patientRequest.answerFromDoctor = updatePatientRequestsDto.answerFromDoctor;
             patientRequest.requestType = updatePatientRequestsDto.requestType;
 
-
             dbContext.SaveChanges();
+            
+            // Send notification to patient about new response from doctor
+            Guid patientId = patientRequest.patientId;
+            string? msgToken = dbContext.Users
+                .Where(u => u.id == patientId)
+                .Select(u => u.msgToken)
+                .FirstOrDefault();
+            await _notificationsService.SendNewDoctorResponseToPatient(patientId, patientRequest, msgToken);
+
+
+
             return Ok(patientRequest);
         }
 
