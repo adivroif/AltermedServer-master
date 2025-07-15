@@ -305,7 +305,7 @@ namespace AltermedManager.Services
 
             // Send notification to doctor for approval
             Guid doctorId = appointment.doctorId;
-            string msgToken = _context.Users
+            string? msgToken = _context.Users
                 .Where(u => u.id == doctorId)
                 .Select(u => u.msgToken)
                 .FirstOrDefault();

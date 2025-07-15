@@ -14,7 +14,6 @@ namespace AltermedManager.Models.Entities
         public RequestType requestType { get; set; }
         public Guid appointmentId { get; set; }
         public string? answerFromDoctor { get; set; }
-
         public bool isUrgent { get; set; }
         
     }
