@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AltermedManager", "Altermed
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject", "..\UnitTestProject\UnitTestProject.csproj", "{FC8A277C-B8CC-4EA1-8CC2-D1962D4D60FE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AltermedManagerTests", "..\AltermedManagerTests\AltermedManagerTests.csproj", "{78DFA1D2-F728-4E0A-98F8-E62EF12D9881}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{FC8A277C-B8CC-4EA1-8CC2-D1962D4D60FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC8A277C-B8CC-4EA1-8CC2-D1962D4D60FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC8A277C-B8CC-4EA1-8CC2-D1962D4D60FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78DFA1D2-F728-4E0A-98F8-E62EF12D9881}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78DFA1D2-F728-4E0A-98F8-E62EF12D9881}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78DFA1D2-F728-4E0A-98F8-E62EF12D9881}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78DFA1D2-F728-4E0A-98F8-E62EF12D9881}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
