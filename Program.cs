@@ -31,9 +31,6 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 
 
-
-
-
 //For firebase
 var firebaseCredentialsPath = Path.Combine(Directory.GetCurrentDirectory(), builder.Configuration["Firebase:CredentialsFile"]);
 FirebaseApp.Create(new AppOptions()
@@ -67,6 +64,13 @@ builder.Services.AddScoped<PatientsController>();
 builder.Services.AddScoped<PatientsFeedbacksService>();
 builder.Services.AddScoped<FeedbackAnalysisServer>();
 builder.Services.AddScoped<INotificationsService, NotificationsService>();
+//Add HttpClient foe connection to the Health Provider Server
+builder.Services.AddHttpClient("DummyProvider", client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5047");
+});
+builder.Services.AddScoped<DummyHealthProviderService>();
+
 
 //for smartphone testing use this port
 builder.WebHost.UseUrls("http://0.0.0.0:5000"); // Optional: keep HTTP for testing
