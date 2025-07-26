@@ -1,6 +1,7 @@
 ﻿using AltermedManager.Data;
 using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
+using AltermedManager.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,9 +13,11 @@ namespace AltermedManager.Controllers
     public class PatientsController : ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
-        public PatientsController(ApplicationDbContext dbContext)
+        private readonly DummyHealthProviderService _healthProvider;
+        public PatientsController(ApplicationDbContext dbContext, DummyHealthProviderService hp)
         {
             this.dbContext = dbContext;
+            this._healthProvider = hp;
 
         }
         [HttpGet]
@@ -111,5 +114,15 @@ namespace AltermedManager.Controllers
             dbContext.SaveChanges();
             return Ok("Patient deleted");
         }
-    }
+
+        [HttpGet("hp/{idNum}")]
+        public async Task<IActionResult> GetFromHealthProvider(string idNum)
+            {
+            var patient = await _healthProvider.GetPatientByIdAsync(idNum);
+            if (patient == null)
+                return NotFound();
+
+            return Ok(patient);
+            }
+        }
 }
