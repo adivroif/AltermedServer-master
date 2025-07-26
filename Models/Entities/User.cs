@@ -9,7 +9,7 @@ namespace AltermedManager.Models.Entities
         public Guid id { get; set; }
         public required string name { get; set; }
         public required string firebaseId { get; set; }
-        public required string msgToken { get; set; }
+        public string? msgToken { get; set; }
         public required string role { get; set; }
         
         }
