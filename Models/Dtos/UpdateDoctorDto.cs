@@ -15,6 +15,8 @@ namespace AltermedManager.Models.Dtos
         public List<string>? specList { get; set; }
         public Guid scheduleId { get; set; }
         public List<int> placesWorking { get; set; } = new List<int>();
+        public required string Phone { get; set; }
+        public required string Email { get; set; }
 
-        }
+    }
 }

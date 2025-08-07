@@ -14,6 +14,9 @@ namespace AltermedManager.Models.Entities
         public List<string> specList { get; set; }
         public Guid scheduleId { get; set; }
         public List<int> placesWorking {  get; set; }
-        
-        }
+        public required string Phone { get; set; }
+        public required string Email { get; set; }
+
+
     }
+}
