@@ -53,6 +53,20 @@ namespace AltermedManager.Services
                 }
             return appointments;
             }
+
+        public async Task<List<Appointment>> AppointmentsByDoctorId(Guid doctorId)
+        {
+            var appointments = await _context.Appointments
+                .Where(d => d.doctorId == doctorId)
+                .Include(a => a.Address)
+                .Include(a => a.startAppSlot)
+                .ToListAsync();
+            if (appointments is null || !appointments.Any())
+            {
+                return null;
+            }
+            return appointments;
+        }
         public Appointment? GetAppointmentByUId(Guid id)
         {
             return _context.Appointments
