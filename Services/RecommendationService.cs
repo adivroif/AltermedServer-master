@@ -74,9 +74,9 @@ namespace AltermedManager.Services
             }
         public async Task<List<Recommendation>> GetRecommendationsOfPatient(Guid patientId)
         {
-            // ב־.NET בצד השרת
+            
             var recommendations = _context.Recommendations
-                .Include(r => r.RecommendedTreatment) // כולל את ה־Treatment
+                .Include(r => r.RecommendedTreatment) // include Treatment
                 .Where(r => r.patientId == patientId)
                 .ToList();
 
@@ -129,9 +129,9 @@ namespace AltermedManager.Services
 
     public async Task<List<Recommendation>> GetRecommendationsNotChosenOfPatient(Guid patientId)
         {
-            // ב־.NET בצד השרת
+            
             var recommendations = _context.Recommendations
-                .Include(r => r.RecommendedTreatment) // כולל את ה־Treatment
+                .Include(r => r.RecommendedTreatment) // include Treatment
                 .Where(r => r.patientId == patientId && (r.isChosen == false || r.isChosen == null))
                 .ToList();
 
