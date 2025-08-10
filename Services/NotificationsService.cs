@@ -34,7 +34,7 @@
         public async Task SendDoctorRecommendationApprovalRequestAsync(Guid doctorId, Recommendation recommendation, string? msgToken)
             {
             
-            string _title = Messages.NewNotification; ;
+            string _title = Messages.NewNotification; 
             string _body = $"{Messages.NewRecommendationToDoctorForApprove} - {recommendation.Patient.patientName} {recommendation.Patient.patientSurname}";
 
             _context.StoredNotifications.Add(new StoredNotification

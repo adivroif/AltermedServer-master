@@ -11,6 +11,8 @@ using System.Numerics;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
+using AltermedManager.Resources;
+
 namespace AltermedManager.Services
     {
     public class RecommendationService
@@ -161,7 +163,7 @@ namespace AltermedManager.Services
                             {
                             Console.WriteLine($"No advanced treatments found for treatmentId {appointment.treatmentId} in the same group");
                             }
-                        else return await CreateAndSaveNewRecommendation(treatments.FirstOrDefault(), appointmentID, "More advanced treatment"); //advanced treatment in current group found
+                        else return await CreateAndSaveNewRecommendation(treatments.FirstOrDefault(), appointmentID, RecommendationReasons.AdvancedTreatmentSameGroup); //advanced treatment in current group found
                         }
                     //treatment is advanced or cant found in the same group - check another category
                     treatments = FindTreatmentsInAnotherGroup(treatmentGroup);
@@ -182,9 +184,9 @@ namespace AltermedManager.Services
                             Console.WriteLine($"No advanced treatments found for treatmentId {appointment.treatmentId} in another group");
                             return null;
                             }
-                        return await CreateAndSaveNewRecommendation(advancedTreatments.FirstOrDefault(), appointmentID, "More advanced treatment in another group");
+                        return await CreateAndSaveNewRecommendation(advancedTreatments.FirstOrDefault(), appointmentID, RecommendationReasons.TreatmentFromAnotherGroup);
                         }
-                    var res = await CreateAndSaveNewRecommendation(notAdvancedTreatments.FirstOrDefault(), appointmentID, "Treatment in another group");
+                    var res = await CreateAndSaveNewRecommendation(notAdvancedTreatments.FirstOrDefault(), appointmentID, RecommendationReasons.TreatmentFromAnotherGroup);
                     return res;
                     }
                 else
@@ -292,7 +294,7 @@ namespace AltermedManager.Services
                 patientId = patientId,
                 appointmentId = _appointmentId,
                 recommendedTreatmentId = _newTreatment.treatmentId,
-                reason = "General Recommendation",
+                reason = RecommendationReasons.GeneralRecommendation,
                 source = _reason,
                 isChosen = null,
                 Patient = patient,
@@ -367,7 +369,7 @@ namespace AltermedManager.Services
                 else
                     {
                     //3. create recommendation
-                    CreateAndSaveNewRecommendation(bodyTreatment, patientFeedbackEntity.appointmentId, "Similar patients reported better results");
+                    CreateAndSaveNewRecommendation(bodyTreatment, patientFeedbackEntity.appointmentId, RecommendationReasons.SimilarPatientsReportBetterResults);
                     }
                 }
             catch (ArgumentNullException ex)

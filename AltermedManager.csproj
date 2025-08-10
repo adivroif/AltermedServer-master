@@ -45,12 +45,22 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\RecommendationReasons.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RecommendationReasons.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="Resources\Messages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>AltermedManager.Resources</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\RecommendationReasons.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RecommendationReasons.Designer.cs</LastGenOutput>
       <CustomToolNamespace>AltermedManager.Resources</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
