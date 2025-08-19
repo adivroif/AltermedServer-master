@@ -86,6 +86,11 @@ namespace AltermedManager.Controllers
         public IActionResult AddAppointment(NewAppointmentDto dto)
             {
             var newAppointment = _appointmentService.AddAppointment(dto);
+            if (newAppointment is null)
+                {
+                _log.LogWarning("Appointment with {Id} not created. Check input data.", dto.appointmentId);
+                return BadRequest("Appointment not created. Check input data.");
+                }
             return Ok(newAppointment);
             }
 
