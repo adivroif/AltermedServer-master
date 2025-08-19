@@ -24,6 +24,7 @@ namespace AltermedManager.Services
         //private readonly PatientsFeedbacksService _feedbackService;
         private readonly FeedbackAnalysisServer _feedbackAnalysis;
         private readonly INotificationsService _notificationsService;
+        private readonly ILogger<AddressController> _log;
         private readonly string _filePath = Path.Combine(AppContext.BaseDirectory, "Resources", "treatmentsLevels.xml");
         private OrderedDictionary<string, int> _treatmentsLevelConfiguration = new OrderedDictionary<string, int>();
 
@@ -33,7 +34,8 @@ namespace AltermedManager.Services
             TreatmentService treatmentService,
             PatientsController patientsController,
             FeedbackAnalysisServer feedbackAnalysis,
-            INotificationsService notificationsService
+            INotificationsService notificationsService,
+            ILogger<AddressController> log
               )
             {
             _context = context;
@@ -42,6 +44,7 @@ namespace AltermedManager.Services
             _patientsController = patientsController;
             _feedbackAnalysis = feedbackAnalysis;
             _notificationsService = notificationsService;
+            _log = log;
             LoadTreatmentsLevelConfigurationFile(_filePath);
             }
         private void LoadTreatmentsLevelConfigurationFile(string filePath)
@@ -50,9 +53,7 @@ namespace AltermedManager.Services
                 {
                 if (!File.Exists(filePath))
                     {
-
                     throw new FileNotFoundException($"File not found: {filePath}");
-
                     }
                 XDocument xdoc = XDocument.Load(filePath);
                 foreach (XElement element in xdoc.Descendants("TreatGroup"))
@@ -65,13 +66,13 @@ namespace AltermedManager.Services
                         }
                     else
                         {
-                        Console.WriteLine($"Error loading treatment group from XML file");
+                        _log.LogError($"Error loading treatment group from XML file: {filePath}");
                         }
                     }
                 }
             catch (FileNotFoundException ex)
                 {
-                Console.WriteLine($"Error loading file: {ex.Message}");
+                _log.LogError(ex, "Error loading treatments level configuration file: {FilePath}", filePath);
                 }
             }
         public async Task<List<Recommendation>> GetRecommendationsOfPatient(Guid patientId)
@@ -84,6 +85,7 @@ namespace AltermedManager.Services
 
             if (recommendations is null || !recommendations.Any())
             {
+                _log.LogWarning("No recommendations found for patient with ID: {PatientId}", patientId);
                 return null;
             }
             return recommendations;
@@ -92,15 +94,24 @@ namespace AltermedManager.Services
         public async Task<Recommendation> GetRecommendation(int recommendationId)
         {
             var recommendation = _context.Recommendations.Find(recommendationId);
-
+            if (recommendation is null)
+                {
+                _log.LogWarning("No recommendation found with ID: {RecommendationId}", recommendationId);
+                return null;
+                }
             return recommendation;
         }
         public async Task<Recommendation> UpdateRecommendation(int recommendationId,UpdateRecommendationDto updateRecommendationDto)
         {
-
+            if(updateRecommendationDto is null)
+                {
+                _log.LogError("UpdateRecommendationDto is null, not available to update recommendation");
+                return null;
+                }
             var recommendation = _context.Recommendations.Find(recommendationId);
             if (recommendation is null)
             {
+                _log.LogWarning("No recommendation found with ID: {RecommendationId}", recommendationId);
                 return null;
             }
             recommendation.recommendationId = updateRecommendationDto.recommendationId;
@@ -139,6 +150,7 @@ namespace AltermedManager.Services
 
             if (recommendations is null || !recommendations.Any())
             {
+                _log.LogWarning("No approved recommendations found for patient with ID: {PatientId}", patientId);
                 return null;
             }
             return recommendations;
@@ -157,11 +169,11 @@ namespace AltermedManager.Services
 
                     if (!treatmentIsAdvanced) //check the same category but another level
                         {
-                        Console.WriteLine($"Try to find treatment in the same group - another level");
+                        _log.LogInformation($"Treatment {treatment.treatmentName} is not advanced, trying to find in the same group but another level");
                         treatments = FindTreatmentsInCurrentGroup(treatmentGroup).Where(t => t.isAdvanced == true).ToList();
                         if (treatments is null || treatments.Count() == 0)
                             {
-                            Console.WriteLine($"No advanced treatments found for treatmentId {appointment.treatmentId} in the same group");
+                            _log.LogInformation($"No advanced treatments found for treatmentId {appointment.treatmentId} in the same group");
                             }
                         else return await CreateAndSaveNewRecommendation(treatments.FirstOrDefault(), appointmentID, RecommendationReasons.AdvancedTreatmentSameGroup); //advanced treatment in current group found
                         }
@@ -170,18 +182,18 @@ namespace AltermedManager.Services
                     //try to find from not advanced treatments in another group
                     if (treatments is null || treatments.Count() == 0)
                         {
-                        Console.WriteLine($"No treatment found for treatmentId {appointment.treatmentId} in another group");
-                        //TODO: CHECK IN NEXT GROUP MAY BE
+                        _log.LogInformation($"No treatments found for treatmentId {appointment.treatmentId} in another group");                        
                         return null;
                         }
                     List<Treatment> notAdvancedTreatments = [.. treatments.Where(t => t.isAdvanced == false)]; //ToList simplifier
                     if (notAdvancedTreatments.Count == 0)
                         {
-                        Console.WriteLine($"No light treatments found for treatmentId {appointment.treatmentId} in another group");
+                        _log.LogInformation($"No not advanced treatments found for treatmentId {appointment.treatmentId} in another group");
+
                         List<Treatment> advancedTreatments = treatments.Where(t => t.isAdvanced == true).ToList();
                         if (advancedTreatments.Count == 0)
                             {
-                            Console.WriteLine($"No advanced treatments found for treatmentId {appointment.treatmentId} in another group");
+                            _log.LogInformation($"No advanced treatments found for treatmentId {appointment.treatmentId} in another group");
                             return null;
                             }
                         return await CreateAndSaveNewRecommendation(advancedTreatments.FirstOrDefault(), appointmentID, RecommendationReasons.TreatmentFromAnotherGroup);
@@ -191,12 +203,12 @@ namespace AltermedManager.Services
                     }
                 else
                     {
-                    Console.WriteLine($"No treatment found for treatmentId {appointment.treatmentId}");
+                    _log.LogInformation($"No treatment found for treatmentId {appointment.treatmentId} in appointmentId {appointmentID}");
                     }
                 }
             else
                 {
-                Console.WriteLine($"No appointment found for appointmentId {appointmentID}");
+                _log.LogInformation($"No appointment found for appointmentId {appointmentID}");
                 }
             return null;
             }
@@ -206,7 +218,7 @@ namespace AltermedManager.Services
             List<Treatment> treatments = _treatmentService.GetTreatmentByCategory(treatmentGroup);
             if (treatments != null)
                 {
-                Console.WriteLine($"Found {treatments.Count} treatments in group {treatmentGroup}");
+                _log.LogInformation($"Found {treatments.Count} treatments in group {treatmentGroup}");
                 return treatments;
                 }
             return new List<Treatment>();
@@ -218,7 +230,7 @@ namespace AltermedManager.Services
             string? nextTreatmentGroup = null;
             if (_treatmentsLevelConfiguration.Count == 0)
                 {
-                Console.WriteLine($"No treatment group found in configuration file");
+                _log.LogError($"No treatment group found in configuration file: {_filePath}");
                 return new List<Treatment>();
                 }
             else
@@ -228,7 +240,8 @@ namespace AltermedManager.Services
 
                     do
                         {
-                        Console.WriteLine($"Found treatment group {currentTreatmentGroup} with Level: {currentLevel}");
+
+                        _log.LogInformation($"Found treatment group {currentTreatmentGroup} with Level: {currentLevel}");
                         int nextLevel;
                         if (currentLevel == _treatmentsLevelConfiguration.Count) //the last category
                             {
@@ -243,23 +256,25 @@ namespace AltermedManager.Services
                             .FirstOrDefault(t => t.Value == nextLevel).Key;
                         if (nextTreatmentGroup != null)
                             {
-                            Console.WriteLine($"Next level treatment group: {nextTreatmentGroup} with Level: {nextLevel}");
+                            _log.LogInformation($"Next treatment group found: {nextTreatmentGroup} with Level: {nextLevel}");
                             List<Treatment> treatments = FindTreatmentsInCurrentGroup(nextTreatmentGroup);
                             if (treatments != null)
                                 {
-                                Console.WriteLine($"Found {treatments.Count} treatments in group {nextTreatmentGroup}");
+                                _log.LogInformation($"Found {treatments.Count} treatments in group {nextTreatmentGroup}");
                                 return treatments;
                                 }
                             else
                                 {
-                                Console.WriteLine($"No treatment found for group {nextTreatmentGroup}");
+                                _log.LogInformation($"No treatments found in group {nextTreatmentGroup} with Level: {nextLevel}");
+                                
                                 }
                             }
                         else
                             {
-                            Console.WriteLine($"No treatment group found for {currentTreatmentGroup}");
+                            _log.LogInformation($"No next treatment group found for {currentTreatmentGroup} with Level: {currentLevel}");
                             }
-                        Console.WriteLine($"Found {_treatmentsLevelConfiguration.Count} treatment groups in configuration file");
+
+                        _log.LogInformation($"Found {_treatmentsLevelConfiguration.Count} treatment groups in configuration file");
 
                         }
                     while (nextTreatmentGroup != currentTreatmentGroup);
@@ -277,63 +292,73 @@ namespace AltermedManager.Services
          */
         public async Task<Recommendation> CreateAndSaveNewRecommendation(Treatment _newTreatment, Guid _appointmentId, string _reason)
             {
-            var appointment = _appointmentService.GetAppointmentByUId(_appointmentId);
-            if (appointment == null)
+            try
                 {
-                throw new ArgumentNullException(nameof(appointment), "Appointment not found.");
+                var appointment = _appointmentService.GetAppointmentByUId(_appointmentId);
+                if (appointment == null)
+                    {
+                    _log.LogError("Appointment not found for ID: {AppointmentId}", _appointmentId);
+                    return null;
+                    }
+                var patientId = appointment.patientId;
+                var patient = _patientsController.GetPatientByUId(patientId);
+                if (patient == null)
+                    {
+                    _log.LogError("Patient not found for ID: {PatientId}", patientId);
+                    return null;
+                    }
+
+                var recommendation = new Recommendation
+                    {
+                    patientId = patientId,
+                    appointmentId = _appointmentId,
+                    recommendedTreatmentId = _newTreatment.treatmentId,
+                    reason = RecommendationReasons.GeneralRecommendation,
+                    source = RecommendationsSources.system,
+                    isChosen = null,
+                    Patient = patient,
+                    RecommendedTreatment = _newTreatment
+                    };
+
+                _context.Recommendations.Add(recommendation);
+                _context.SaveChanges();
+                _context.Entry(recommendation).Reload(); // Reload to get the generated ID and other properties
+
+                // Send notification to doctor for approval
+                Guid doctorId = appointment.doctorId;
+                string? msgToken = _context.Users
+                    .Where(u => u.id == doctorId)
+                    .Select(u => u.msgToken)
+                    .FirstOrDefault();
+                int newRecommendationId = recommendation.recommendationId;
+                await _notificationsService.SendDoctorRecommendationApprovalRequestAsync(doctorId, recommendation, msgToken);
+                return recommendation;
                 }
-            var patientId = appointment.patientId;
-            var patient = _patientsController.GetPatientByUId(patientId);
-            if (patient == null)
+            catch (Exception ex)
                 {
-                throw new Exception("Patient not found for the provided ID.");
+                _log.LogError(ex, "Error creating and saving new recommendation for appointmentId: {AppointmentId}", _appointmentId);
+                return null;
                 }
-
-            var recommendation = new Recommendation
-                {
-                patientId = patientId,
-                appointmentId = _appointmentId,
-                recommendedTreatmentId = _newTreatment.treatmentId,
-                reason = RecommendationReasons.GeneralRecommendation,
-                source = RecommendationsSources.system,
-                isChosen = null,
-                Patient = patient,
-                RecommendedTreatment = _newTreatment
-                };            
-
-            _context.Recommendations.Add(recommendation);
-            _context.SaveChanges();
-            _context.Entry(recommendation).Reload(); // Reload to get the generated ID and other properties
-
-            // Send notification to doctor for approval
-            Guid doctorId = appointment.doctorId;
-            string? msgToken = _context.Users
-                .Where(u => u.id == doctorId)
-                .Select(u => u.msgToken)
-                .FirstOrDefault();
-            int newRecommendationId = recommendation.recommendationId;
-            await _notificationsService.SendDoctorRecommendationApprovalRequestAsync(doctorId, recommendation, msgToken);
-            return recommendation;
             }
 
 
         /* 
          * Function will be used to choose treatment for recommendation when there are more than one treatment.
-         * It will return the treatment with the highest score
+         * It will return the treatment with the highest score.
          */
         private Treatment? ChooseTreatmentForRecommendation(List<Treatment> treatments)
             {
             if (treatments == null || treatments.Count == 0)
                 {
-                Console.WriteLine($"No treatment found for recommendation");
+                _log.LogInformation($"No treatments found for recommendation");
                 return null;
                 }
             else
                 {
-                Console.WriteLine($"Found {treatments.Count} treatments for recommendation");
+                _log.LogInformation($"Found {treatments.Count} treatments for recommendation");
                 //choose the treatment with the highest score
                 treatments = treatments.OrderByDescending(t => t.score).ToList();
-                Console.WriteLine($"Treatment with the highest score: {treatments.FirstOrDefault().treatmentName}");
+                _log.LogInformation($"Treatment with the highest score: {treatments.FirstOrDefault().treatmentName}");
                 return treatments.FirstOrDefault();
 
                 }
@@ -347,13 +372,15 @@ namespace AltermedManager.Services
                 var appointment = _appointmentService.GetAppointmentByUId(patientFeedbackEntity.appointmentId);
                 if (appointment == null)
                     {
-                    throw new ArgumentNullException(nameof(appointment), "Appointment not found.");
+                    _log.LogError("Appointment not found for ID: {AppointmentId}", patientFeedbackEntity.appointmentId);
+                    return;
                     }
 
                 var treatment = _treatmentService.GetTreatmentByUId(appointment.treatmentId);
                 if (treatment == null)
                     {
-                    throw new ArgumentNullException(nameof(treatment), "Treatment not found.");
+                    _log.LogError("Treatment not found for ID: {TreatmentId}", appointment.treatmentId);
+                    return;
                     }
 
                 //generate recommendation in two phases:
@@ -372,16 +399,12 @@ namespace AltermedManager.Services
                     CreateAndSaveNewRecommendation(bodyTreatment, patientFeedbackEntity.appointmentId, RecommendationReasons.SimilarPatientsReportBetterResults);
                     }
                 }
-            catch (ArgumentNullException ex)
+            catch (Exception ex)
                 {
-                Console.WriteLine($"Error: {ex.Message}");
+                _log.LogInformation($"Error when generationg recommendation: {ex.Message}");
                 }
 
             }
-
-
-
-
 
         /* 
          * Function will get as input the body part and treatment group and will return the list of treatments
@@ -404,7 +427,7 @@ namespace AltermedManager.Services
                 var relevantFeedbacks = _feedbackAnalysis.GetHighFeedbacksByBodyPart(bodyPart, badTreatment);
                 if (relevantFeedbacks == null || relevantFeedbacks.Count == 0)
                     {
-                    Console.WriteLine($"No feedback found for body part {bodyPart}");
+                    _log.LogInformation($"No feedbacks found for body part {bodyPart} and treatment {badTreatment.treatmentName}");
                     return null;
                     }
                 var treatmentRankings = relevantFeedbacks
@@ -423,7 +446,7 @@ namespace AltermedManager.Services
                 var topTreatmentId = treatmentRankings.FirstOrDefault()?.TreatmentId;
                 if (topTreatmentId == null)
                     {
-                    Console.WriteLine($"No treatment found for body part {bodyPart}");
+                    _log.LogInformation($"No treatments found for body part {bodyPart} with better score than {badTreatment.treatmentName}.");
                     return null;
                     }
                 return _treatmentService.GetTreatmentByUId((int)topTreatmentId);
@@ -431,12 +454,12 @@ namespace AltermedManager.Services
                 }
             catch (ArgumentNullException ex)
                 {
-                Console.WriteLine($"Error: {ex.Message}");
+                _log.LogError(ex, "Argument null exception: {Message}", ex.Message);
                 return null;
                 }
             catch (Exception ex)
                 {
-                Console.WriteLine($"Error: {ex.Message}");
+                _log.LogError(ex, "Error finding treatment by body part: {Message}", ex.Message);
                 return null;
                 }
             }
