@@ -1,5 +1,4 @@
-﻿using AltermedManager.Models.Enums;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
 namespace AltermedManager.Models.Entities

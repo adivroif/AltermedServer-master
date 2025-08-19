@@ -1,7 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.Metrics;
-using System;
 
 namespace AltermedManager.Models.Entities
 {
