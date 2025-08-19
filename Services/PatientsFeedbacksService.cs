@@ -14,12 +14,15 @@ namespace AltermedManager.Controllers
         private readonly ApplicationDbContext dbContext;
         private readonly TreatmentService _treatmentService;
         private readonly RecommendationService _recommendationService;
+        private readonly ILogger<AddressController> _log;
+
         public PatientsFeedbacksService(ApplicationDbContext dbContext, TreatmentService treatmentService,
-            RecommendationService recommendationService)
+            RecommendationService recommendationService, ILogger<AddressController> log)
             {
             this.dbContext = dbContext;
             _treatmentService = treatmentService;
             _recommendationService = recommendationService;
+            _log = log;
             }
 
         public List<PatientFeedback> GetAllPatientsFeedbacks()
@@ -66,7 +69,11 @@ namespace AltermedManager.Controllers
         public PatientFeedback? UpdatePatientFeedback(Guid id, UpdatePatientFeedbackDto updatePatientFeedbackDto)
             {
             var feedback = dbContext.PatientFeedbacks.Find(id);
-            if (feedback is null) return null;
+            if (feedback is null)
+                {
+                _log.LogError("Patient feedback with ID {Id} not found for update", id);
+                return null;
+                }
 
             feedback.patientId = updatePatientFeedbackDto.patientId;
             feedback.appointmentId = updatePatientFeedbackDto.appointmentId;
@@ -84,7 +91,11 @@ namespace AltermedManager.Controllers
         public PatientFeedback? DeletePatientFeedback(Guid id)
             {
             var feedback = dbContext.PatientFeedbacks.Find(id);
-            if (feedback is null) return null;
+            if (feedback is null)
+                {
+                _log.LogWarning("Patient feedback with ID {Id} not found for deletion", id);
+                return null;
+                }
             dbContext.PatientFeedbacks.Remove(feedback);
             dbContext.SaveChanges();
             return feedback; //return deleted feedback
