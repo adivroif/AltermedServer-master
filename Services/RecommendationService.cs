@@ -295,7 +295,7 @@ namespace AltermedManager.Services
                 appointmentId = _appointmentId,
                 recommendedTreatmentId = _newTreatment.treatmentId,
                 reason = RecommendationReasons.GeneralRecommendation,
-                source = _reason,
+                source = RecommendationsSources.system,
                 isChosen = null,
                 Patient = patient,
                 RecommendedTreatment = _newTreatment
