@@ -50,6 +50,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>RecommendationReasons.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\RecommendationsSources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RecommendationsSources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -61,6 +66,11 @@
     <EmbeddedResource Update="Resources\RecommendationReasons.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RecommendationReasons.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>AltermedManager.Resources</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\RecommendationsSources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RecommendationsSources.Designer.cs</LastGenOutput>
       <CustomToolNamespace>AltermedManager.Resources</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
