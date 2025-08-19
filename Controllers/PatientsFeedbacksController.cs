@@ -17,19 +17,26 @@ namespace AltermedManager.Controllers
         {
         private readonly PatientsFeedbacksService _feedbacksService;
         private readonly ApplicationDbContext dbContext;
+        private readonly ILogger<AddressController> _log;
 
 
-        public PatientsFeedbacksController(PatientsFeedbacksService feedbacksService)
+        public PatientsFeedbacksController(PatientsFeedbacksService feedbacksService, ILogger<AddressController> log)
             {
             _feedbacksService = feedbacksService;
+            _log = log;
             }
 
         [HttpGet]
         public IActionResult GetAllPatientsFeedbacks()
             {
             var result = _feedbacksService.GetAllPatientsFeedbacks();
+            if (result == null)
+                {
+                _log.LogWarning("No feedbacks found.");
+                return NotFound("No feedbacks found.");
+                }
 
-            return result == null ? NotFound("No feedbacks found.") : Ok(result);
+            return Ok(result);
             }
 
 
@@ -38,7 +45,12 @@ namespace AltermedManager.Controllers
         public async Task<IActionResult> GetPatientFeedbackById(Guid id)
             {
             var result = await _feedbacksService.GetFeedbacksByPatientId(id);
-            return result == null ? NotFound("No feedback found.") : Ok(result);
+            if (result == null)
+                {
+                _log.LogWarning($"No feedbacks found for patient with ID: {id}");
+                return NotFound("No feedbacks found.");
+                }
+            return Ok(result);
             }
 
 
@@ -48,6 +60,7 @@ namespace AltermedManager.Controllers
             var feedback = _feedbacksService.GetFeedbackByUId(id);
             if (feedback is null)
                 {
+                _log.LogWarning($"No feedback found with ID: {id}");
                 return NotFound();
                 }
             return Ok(feedback);
@@ -61,6 +74,7 @@ namespace AltermedManager.Controllers
                 .FirstOrDefaultAsync();
             if (feedback is null)
             {
+                _log.LogWarning($"No feedback found for appointment with ID: {appointmentId}");
                 return NotFound();
             }
             return Ok(feedback);
@@ -79,7 +93,12 @@ namespace AltermedManager.Controllers
         public IActionResult UpdatePatientFeedback(Guid id, UpdatePatientFeedbackDto updatePatientFeedbackDto)
             {
             var updated = _feedbacksService.UpdatePatientFeedback(id, updatePatientFeedbackDto);
-            return updated == null ? NotFound("No feedback found.") : Ok(updated);
+            if (updated == null)
+                {
+                _log.LogWarning($"No feedback found with ID: {id} for update.");
+                return NotFound("No feedback found for update.");
+                }
+            return Ok(updated);
             }
 
 
@@ -88,7 +107,12 @@ namespace AltermedManager.Controllers
         public IActionResult DeletePatientFeedback(Guid id)
             {
             var deleted = _feedbacksService.DeletePatientFeedback(id);
-            return deleted == null ? NotFound("No feedback found.") : Ok(deleted);
+            if (deleted == null)
+                {
+                _log.LogWarning($"No feedback found with ID: {id} for deletion.");
+                return NotFound("No feedback found for deletion.");
+                }
+            return Ok(deleted);
 
             }
 

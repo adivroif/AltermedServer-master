@@ -14,11 +14,14 @@ namespace AltermedManager.Controllers
     public class UsersController : ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
-        public UsersController(ApplicationDbContext dbContext)
+        private readonly ILogger<AddressController> _log;
+
+        public UsersController(ApplicationDbContext dbContext, ILogger<AddressController> log)
         {
             this.dbContext = dbContext;
+            _log = log;
 
-        }
+            }
         [HttpGet]
         public IActionResult GetAllUsers()
         {
@@ -33,6 +36,7 @@ namespace AltermedManager.Controllers
             var user = dbContext.Users.FirstOrDefault(u => u.name == name);
             if (user == null)
             {
+                _log.LogWarning($"No user found with name: {name}");
                 return NotFound();
             }
             return Ok(user);
@@ -44,17 +48,22 @@ namespace AltermedManager.Controllers
             var authHeader = Request.Headers["Authorization"].ToString();
             if (string.IsNullOrEmpty(authHeader))
                 {
+                _log.LogWarning("Missing or invalid Authorization header");
                 return Unauthorized("Missing or invalid Authorization header");
                 }
             var token = authHeader.Substring("Bearer ".Length).Trim();
 
             var firebaseUid = await FirebaseTokenValidator.VerifyTokenAsync(token);
             if (firebaseUid == null || firebaseUid != uuid.ToString())
+                {
+                _log.LogWarning("Invalid or mismatched token");
                 return Unauthorized("Invalid or mismatched token");
-
+            }
+               
             var user = dbContext.Users.FirstOrDefault(u => u.id == uuid);
             if (user == null)
                 {
+                _log.LogWarning($"No user found with ID: {uuid}");
                 return NotFound();
                 }
             return Ok(user);
@@ -66,13 +75,17 @@ namespace AltermedManager.Controllers
             var authHeader = Request.Headers["Authorization"].ToString();
             if (string.IsNullOrEmpty(authHeader))
                 {
+                _log.LogWarning("Missing or invalid Authorization header");
                 return Unauthorized("Missing or invalid Authorization header");
                 }
             var token = authHeader.Substring("Bearer ".Length).Trim();
 
             var firebaseUid = await FirebaseTokenValidator.VerifyTokenAsync(token);
             if (firebaseUid == null || firebaseUid != uid.ToString())
+                {
+                _log.LogWarning("Invalid or mismatched token");
                 return Unauthorized("Invalid or mismatched token");
+                }
             /*
             var user = new User()
                 {
@@ -85,6 +98,7 @@ namespace AltermedManager.Controllers
             var user = dbContext.Users.FirstOrDefault(u => u.firebaseId == uid);
             if (user == null)
                 {
+                _log.LogWarning($"No user found with Firebase ID: {uid}");
                 return NotFound();
                 }
             return Ok(user);
@@ -98,6 +112,7 @@ namespace AltermedManager.Controllers
             var user = dbContext.Patients.FirstOrDefault(u => u.patientEmail == email);
             if (user == null)
                 {
+                _log.LogWarning($"No user found with email: {email}");
                 return NotFound();
                 }
             return Ok(user);
@@ -134,6 +149,7 @@ namespace AltermedManager.Controllers
                 = dbContext.Users.Find(id);
             if (user is null)
             {
+                _log.LogWarning($"No user found with ID: {id}");
                 return NotFound();
             }
             user.id = updateUser.id;
@@ -151,6 +167,7 @@ namespace AltermedManager.Controllers
             var user = dbContext.Users.Find(id);
             if (user is null)
             {
+                _log.LogWarning($"No user found with ID: {id}");
                 return NotFound();
             }
             dbContext.Users.Remove(user);

@@ -15,11 +15,12 @@ namespace AltermedManager.Controllers
     {
         private readonly ApplicationDbContext dbContext;
         private readonly INotificationsService _notificationsService;
-        public PatientsRequestController(ApplicationDbContext dbContext, INotificationsService notificationsService)
-        {
+        private readonly ILogger<AddressController> _log;
+        public PatientsRequestController(ApplicationDbContext dbContext, INotificationsService notificationsService, ILogger<AddressController> log)
+            {
             this.dbContext = dbContext;
             _notificationsService = notificationsService;
-
+            _log = log;
             }
         [HttpGet]
         public IActionResult GetAllPatientsRequests()
@@ -38,8 +39,9 @@ namespace AltermedManager.Controllers
 
             if (requests == null || requests.Count == 0)
             {
-                return NotFound("לא נמצאו פניות עבור המטופל.");
-            }
+                _log.LogWarning($"No requests found for patient with ID: {patientId}");
+                return NotFound("Requests not found.");
+                }
 
             return Ok(requests);
         }
@@ -54,7 +56,8 @@ namespace AltermedManager.Controllers
 
             if (requests == null || requests.Count == 0)
             {
-                return NotFound("לא נמצאו פניות עבור הרופא.");
+                _log.LogWarning($"No requests found for doctor with ID: {doctorId}");
+                return NotFound("Requests not found.");
             }
 
             return Ok(requests);
@@ -67,6 +70,7 @@ namespace AltermedManager.Controllers
             var patientRequset = dbContext.PatientRequest.Find(id);
             if (patientRequset is null)
             {
+                _log.LogWarning($"No patient request found with ID: {id}");
                 return NotFound();
             }
             return Ok(patientRequset);
@@ -103,6 +107,7 @@ namespace AltermedManager.Controllers
                 .FirstOrDefault();
             Guid newRequestId = patientRequestEntity.requestId;
             await _notificationsService.SendNewPatientRequestToDoctor(doctorId, patientRequestEntity, msgToken);
+            _log.LogInformation($"New request created and sent to doctor with ID: {doctorId}");
             return Ok(patientRequestEntity);
         }
 
@@ -113,6 +118,7 @@ namespace AltermedManager.Controllers
             var patientRequest = dbContext.PatientRequest.Find(id);
             if (patientRequest is null)
             {
+                _log.LogWarning($"No patient request found with ID: {id}");
                 return NotFound();
             }
             patientRequest.requestId = updatePatientRequestsDto.requestId;
@@ -124,7 +130,6 @@ namespace AltermedManager.Controllers
             patientRequest.isUrgent = updatePatientRequestsDto.isUrgent;
             patientRequest.answerFromDoctor = updatePatientRequestsDto.answerFromDoctor;
             patientRequest.requestType = updatePatientRequestsDto.requestType;
-
             dbContext.SaveChanges();
             
             // Send notification to patient about new response from doctor
@@ -134,9 +139,7 @@ namespace AltermedManager.Controllers
                 .Select(u => u.msgToken)
                 .FirstOrDefault();
             await _notificationsService.SendNewDoctorResponseToPatient(patientId, patientRequest, msgToken);
-
-
-
+            _log.LogInformation($"Patient request with ID: {id} updated and notification sent to patient with ID: {patientId}");
             return Ok(patientRequest);
         }
 
@@ -148,6 +151,7 @@ namespace AltermedManager.Controllers
             var patientRequest = dbContext.PatientRequest.Find(id);
             if(patientRequest is null)
             {
+                _log.LogWarning($"No patient request found with ID: {id}");
                 return NotFound();
             }
             dbContext.PatientRequest.Remove(patientRequest);

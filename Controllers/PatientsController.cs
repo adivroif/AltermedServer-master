@@ -14,12 +14,14 @@ namespace AltermedManager.Controllers
     {
         private readonly ApplicationDbContext dbContext;
         private readonly DummyHealthProviderService _healthProvider;
-        public PatientsController(ApplicationDbContext dbContext, DummyHealthProviderService hp)
-        {
+        private readonly ILogger<AddressController> _log;
+        public PatientsController(ApplicationDbContext dbContext, DummyHealthProviderService hp, ILogger<AddressController> log)
+            {
             this.dbContext = dbContext;
             this._healthProvider = hp;
+            _log = log;
 
-        }
+            }
         [HttpGet]
         public IActionResult GetAllPatients()
         {
@@ -36,6 +38,7 @@ namespace AltermedManager.Controllers
 
             if (patient == null)
             {
+                _log.LogWarning($"No patient found with name: {name}");
                 return NotFound();
             }
 
@@ -49,6 +52,7 @@ namespace AltermedManager.Controllers
             var patient = dbContext.Patients.Find(id);
             if (patient is null)
             {
+                _log.LogWarning($"No patient found with ID: {id}");
                 return null;
             }
             return patient;
@@ -85,6 +89,7 @@ namespace AltermedManager.Controllers
             var patient = dbContext.Patients.Find(id);
             if (patient is null)
             {
+                _log.LogWarning($"No patient found with ID: {id}");
                 return NotFound();
             }
             patient.patientName = updatePatientDto.patientName;
@@ -94,7 +99,6 @@ namespace AltermedManager.Controllers
             patient.patientAddress = updatePatientDto.patientAddress;
             patient.healthProvider = updatePatientDto.healthProvider;
             patient.gender = updatePatientDto.gender;
-
 
             dbContext.SaveChanges();
             return Ok(patient);
@@ -108,6 +112,7 @@ namespace AltermedManager.Controllers
             var patient = dbContext.Patients.Find(id);
             if(patient is null)
             {
+                _log.LogWarning($"No patient found with ID: {id}");
                 return NotFound();
             }
             dbContext.Patients.Remove(patient);
@@ -120,7 +125,10 @@ namespace AltermedManager.Controllers
             {
             var patient = await _healthProvider.GetPatientByIdAsync(idNum);
             if (patient == null)
+                {
+                _log.LogWarning($"No patient found with ID number: {idNum} in health provider system.");
                 return NotFound();
+                }
 
             return Ok(patient);
             }

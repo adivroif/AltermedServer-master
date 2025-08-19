@@ -13,16 +13,17 @@ namespace AltermedManager.Controllers
     public class DoctorsScheduleController : ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
-        public DoctorsScheduleController(ApplicationDbContext dbContext)
+        private readonly ILogger<AddressController> _log;
+        public DoctorsScheduleController(ApplicationDbContext dbContext, ILogger<AddressController> log)
         {
             this.dbContext = dbContext;
-
+            _log = log;
         }
         [HttpGet]
         public IActionResult GetAllDoctorsSchedule()
         {
             var allDoctorsSchedule = dbContext.DoctorSchedule
-                                              .Include(ds => ds.Address)  // טוען את הכתובת גם
+                                              .Include(ds => ds.Address)  
                                               .ToList();
             return Ok(allDoctorsSchedule);
         }
@@ -32,25 +33,27 @@ namespace AltermedManager.Controllers
         public IActionResult GetDoctorSchedulesByUId(Guid id)
         {
             var schedules = dbContext.DoctorSchedule
-                                     .Include(ds => ds.Address) // כולל את הכתובת
-                                     .Where(ds => ds.doctorid == id.ToString()) // מסנן לפי doctorId
-                                     .ToList(); // מחזיר רשימה
+                                     .Include(ds => ds.Address) 
+                                     .Where(ds => ds.doctorid == id.ToString()) 
+                                     .ToList();
 
             if (schedules == null || !schedules.Any())
             {
-                return NotFound(); // אם לא נמצאו לוחות שנה
+                _log.LogWarning($"No schedules found for doctor with ID: {id}");
+                return NotFound(); 
             }
 
-            return Ok(schedules); // מחזיר את הרשימה
+            return Ok(schedules); 
         }
 
 
         [HttpPost]
         public IActionResult? AddDoctorSchedule(NewDoctorScheduleDto newDoctorSchedule)
         {
-            Address address = dbContext.Address.Find(newDoctorSchedule.Address.Id);
+            var address = dbContext.Address.Find(newDoctorSchedule.Address.Id);
             if (address == null)
             {
+                _log.LogError($"Address with ID {newDoctorSchedule.Address.Id} not found for new doctor schedule.");
                 return null;
             }
             var doctorScheduleEntity = new DoctorSchedule()
@@ -76,6 +79,7 @@ namespace AltermedManager.Controllers
             var doctorSchedule = dbContext.DoctorSchedule.Find(id);
             if (doctorSchedule is null)
             {
+               _log.LogWarning($"Doctor schedule with ID {id} not found for update.");
                 return NotFound();
             }
             doctorSchedule.scheduleid = updateDoctorScheduleDto.scheduleid;
@@ -98,6 +102,7 @@ namespace AltermedManager.Controllers
             var doctorSchedule = dbContext.DoctorSchedule.Find(id);
             if(doctorSchedule is null)
             {
+               _log.LogWarning($"Doctor schedule with ID {id} not found for deletion.");
                 return NotFound();
             }
             dbContext.DoctorSchedule.Remove(doctorSchedule);

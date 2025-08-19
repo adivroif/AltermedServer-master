@@ -46,21 +46,20 @@ namespace AltermedManager.Controllers
             return Ok(appointmentSlotsEntity);
         }
 
-        [HttpPut("{id:int}")] // נניח שה-slotId עובר ב-URL
+        [HttpPut("{id:int}")] 
         public IActionResult UpdateAppointmentSlot(int id, NewAppointmentSlotsDto updatedSlot)
         {
             var existingSlot = dbContext.AppointmentSlots.Find(id);
             if (existingSlot == null)
             {
-                return NotFound(); // הסלוט לא נמצא
+                return NotFound(); 
             }
             Console.WriteLine(existingSlot);
             existingSlot.doctorid = updatedSlot.doctorid;
             existingSlot.date_of_treatment = updatedSlot.date_of_treatment;
             existingSlot.starttime = updatedSlot.starttime;
             existingSlot.endtime = updatedSlot.endtime;
-            existingSlot.isbooked = updatedSlot.isbooked; // זהו השדה שאנו רוצים לעדכן
-            Console.WriteLine("isbooked : " + existingSlot.isbooked);
+            existingSlot.isbooked = updatedSlot.isbooked;
 
             dbContext.SaveChanges();
             return Ok(existingSlot);
@@ -91,7 +90,7 @@ namespace AltermedManager.Controllers
                         s.doctorid == doctorId && s.date_of_treatment.Month == date.Month && s.date_of_treatment.Year == date.Year && s.date_of_treatment.DayNumber == date.DayNumber).FirstOrDefault();                         
             if (slot is null)
             {
-                return NotFound("לא נמצא חריץ פגישה התואם לקריטריונים.");
+                return NotFound("Slot not found.");
             }
             return Ok(slot);
         }
