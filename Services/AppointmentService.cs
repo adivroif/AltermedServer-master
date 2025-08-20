@@ -158,5 +158,22 @@ namespace AltermedManager.Services
             return true;
         }
 
-    }
+    
+
+
+        public async Task<List<Appointment>> GetUnreportedAppointmentsByPatientId(Guid patientId)
+            {
+            var appointmentsWithoutReport = await _context.Appointments
+                                                       .Where(a => a.patientId == patientId)
+                                                       .Where(a => !_context.PatientFeedbacks
+                                                       .Any(r => r.patientId == patientId && r.appointmentId == a.appointmentId))
+                                                       .ToListAsync();
+            if (appointmentsWithoutReport is null || !appointmentsWithoutReport.Any())
+                {
+                _log.LogWarning("No unreported appointments found for patient with ID: {PatientId}", patientId);
+                return null;
+                }
+            return appointmentsWithoutReport;
+            }
+        }
 }
