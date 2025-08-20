@@ -27,7 +27,7 @@ builder.Logging.AddSimpleConsole(o => {
 });
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
-builder.Logging.AddFilter("Microsoft", LogLevel.Warning);
+builder.Logging.AddFilter("Microsoft", LogLevel.Information);
 builder.Logging.AddFilter("System", LogLevel.Warning);
 builder.Logging.SetMinimumLevel(LogLevel.Information);
 //end logging
