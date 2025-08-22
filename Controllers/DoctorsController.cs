@@ -12,9 +12,11 @@ namespace AltermedManager.Controllers
     public class DoctorsController : ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
-        public DoctorsController(ApplicationDbContext dbContext)
+        private readonly ILogger<AddressController> _log;
+        public DoctorsController(ApplicationDbContext dbContext, ILogger<AddressController> log)
         {
             this.dbContext = dbContext;
+            _log = log;
 
         }
         [HttpGet]
@@ -31,6 +33,7 @@ namespace AltermedManager.Controllers
             var patient = dbContext.Doctors.Find(id);
             if (patient is null)
             {
+                _log.LogWarning("Doctor with {Id} not found.", id);
                 return NotFound();
             }
             return Ok(patient);
@@ -42,6 +45,7 @@ namespace AltermedManager.Controllers
             var doctor = dbContext.Doctors.FirstOrDefault(d => d.doctorName + " " + d.doctorSurname == name);
             if (doctor == null)
             {
+                _log.LogWarning("Doctor with {Name} not found.", name);
                 return NotFound();
             }
             return Ok(doctor);
@@ -50,19 +54,34 @@ namespace AltermedManager.Controllers
         [HttpGet("doctorId/{doctorId}")]
         public async Task<IActionResult> GetDoctorTreatments(string doctorId)
         {
-            // שליפת הרופא לפי מזהה
-            var doctor = await dbContext.Doctors
-                .FirstOrDefaultAsync(d => d.DoctorId.ToString() == doctorId);
+            try
+                {
+                var doctor = await dbContext.Doctors
+                    .FirstOrDefaultAsync(d => d.DoctorId.ToString() == doctorId);
 
-            if (doctor == null)
-                return NotFound("Doctor not found");
-
-            // שליפת טיפולים שה-id שלהם נמצא ב-specList של הרופא
-            var treatments = await dbContext.Treatments
-                .Where(t => doctor.specList.Contains(t.treatmentName))
-                .ToListAsync();
-
-            return Ok(treatments);
+                if (doctor == null)
+                    {
+                    _log.LogWarning("No treatments returned - Doctor with {Id} not found", doctorId);
+                    return NotFound("Doctor not found");
+                    }
+                var treatments = await dbContext.Treatments
+                    .Where(t => doctor.specList.Contains(t.treatmentName))
+                    .ToListAsync();
+                if (treatments.Count == 0)
+                    {
+                    _log.LogWarning("Doctor {DoctorId} specialties matched 0 treatments", doctorId);
+                    }
+                else
+                    {
+                    ;
+                    }
+                return Ok(treatments);
+                }
+                catch (Exception e)
+                {
+                _log.LogError(e, "Error getting treatments for doctor {DoctorId}", doctorId);
+                return StatusCode(500, "Internal server error");
+                }
         }
 
         [HttpPost]
@@ -93,13 +112,16 @@ namespace AltermedManager.Controllers
             var doctor = dbContext.Doctors.Find(id);
             if (doctor is null)
             {
+                _log.LogWarning("Doctor with {Id} not found.", id);
                 return NotFound();
             }
-            doctor.DoctorId = updateDoctorDto.DoctorId;
+            //doctor.DoctorId = updateDoctorDto.DoctorId;
             doctor.doctorName = updateDoctorDto.doctorName;
             doctor.doctorSurname = updateDoctorDto.doctorSurname;
             doctor.doctorLicense = updateDoctorDto.doctorLicense;
-            doctor.specList = updateDoctorDto.specList;
+            if(updateDoctorDto.specList !=null)
+                doctor.specList = updateDoctorDto.specList;
+            
             doctor.scheduleId = updateDoctorDto.scheduleId;
             doctor.placesWorking = updateDoctorDto.placesWorking;
             doctor.Email = updateDoctorDto.Email;
@@ -117,6 +139,7 @@ namespace AltermedManager.Controllers
             var doctor = dbContext.Doctors.Find(id);
             if(doctor is null)
             {
+                _log.LogWarning("Doctor with {Id} not found", id);
                 return NotFound();
             }
             dbContext.Doctors.Remove(doctor);

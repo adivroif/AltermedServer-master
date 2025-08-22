@@ -7,9 +7,8 @@
     using System;
     using AltermedManager.Data;
     using AltermedManager.Resources;
-    using System.Globalization;
-    using Google.Apis.Http;
     using AltermedManager.Models.Enums;
+    using AltermedManager.Controllers;
 
     public interface INotificationsService
         {
@@ -24,11 +23,13 @@
     public class NotificationsService : INotificationsService
         {
         private readonly ApplicationDbContext _context;
-         
+        private readonly ILogger<AddressController> _log;
 
-        public NotificationsService(ApplicationDbContext context)
+
+        public NotificationsService(ApplicationDbContext context, ILogger<AddressController> log)
             {
             _context = context;
+            _log = log;
             }
 
         public async Task SendDoctorRecommendationApprovalRequestAsync(Guid doctorId, Recommendation recommendation, string? msgToken)
@@ -159,7 +160,7 @@
                 await FirebaseMessaging.DefaultInstance.SendAsync(message);
                 } catch (Exception e)
                 {
-                Console.WriteLine($"-------- {e.Message}");
+                _log.LogError("Error sending notification: {Message}", e.Message);
 
                 }
             }

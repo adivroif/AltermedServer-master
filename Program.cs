@@ -9,6 +9,7 @@ using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,18 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
+//logging
+builder.Logging.ClearProviders();
+builder.Logging.AddSimpleConsole(o => {
+    o.SingleLine = true;
+    o.TimestampFormat = "HH:mm:ss ";
+});
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+builder.Logging.AddFilter("Microsoft", LogLevel.Information);
+builder.Logging.AddFilter("System", LogLevel.Warning);
+builder.Logging.SetMinimumLevel(LogLevel.Information);
+//end logging
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 

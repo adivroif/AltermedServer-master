@@ -14,28 +14,32 @@ namespace AltermedManager.Controllers
     {
         private readonly ApplicationDbContext dbContext;
         private readonly DummyHealthProviderService _healthProvider;
-        public PatientsController(ApplicationDbContext dbContext, DummyHealthProviderService hp)
-        {
+        private readonly ILogger<AddressController> _log;
+        private readonly PatientService _patientService;
+        public PatientsController(ApplicationDbContext dbContext, DummyHealthProviderService hp, ILogger<AddressController> log, PatientService patientService)
+            {
             this.dbContext = dbContext;
             this._healthProvider = hp;
+            this._patientService = patientService;
+            _log = log;
 
-        }
+            }
         [HttpGet]
         public IActionResult GetAllPatients()
         {
             var allPatients = dbContext.Patients.ToList();
             return Ok(allPatients);
-        }
+
+            return Ok(_patientService.GetAllPatients());
+            }
 
         [HttpGet("{name}")]
         public IActionResult GetPatientByName(string name)
         {
-            var patient = dbContext.Patients
-                .Include(p => p.patientAddress) // Load the related patientAddress
-                .FirstOrDefault(p => p.patientName + " " + p.patientSurname == name);
-
+            var patient = _patientService.GetPatientByName(name);
             if (patient == null)
             {
+                _log.LogWarning($"No patient found with name: {name}");
                 return NotFound();
             }
 
@@ -49,6 +53,7 @@ namespace AltermedManager.Controllers
             var patient = dbContext.Patients.Find(id);
             if (patient is null)
             {
+                _log.LogWarning($"No patient found with ID: {id}");
                 return null;
             }
             return patient;
@@ -57,47 +62,30 @@ namespace AltermedManager.Controllers
 
 
         [HttpPost]
-        public IActionResult AddPatient(NewPatientDto newPatient)
+        public IActionResult AddPatient(NewPatientDto newDto)
         {
-            var patientEntity = new Patient()
-            {
-                id = newPatient.id,
-                patientID = newPatient.patientID,
-                patientName = newPatient.patientName,
-                patientSurname = newPatient.patientSurname,
-                patientEmail = newPatient.patientEmail,
-                patientPhone = newPatient.patientPhone,
-                patientAddress = newPatient.patientAddress,
-                healthProvider = newPatient.healthProvider,
-                gender = newPatient.gender,
-                dateOfBirth = newPatient.dateOfBirth
-            };
-            dbContext.Patients.Add(patientEntity);
-            dbContext.SaveChanges();
-
-            return Ok(patientEntity);
+            var newPatient = _patientService.AddPatient(newDto);
+            if (newPatient == null)
+                {
+                _log.LogError("Failed to add new patient.");
+                return BadRequest("Failed to add new patient.");
+                }
+            return Ok(newPatient);
         }
 
         [HttpPut]
         [Route("{id:guid}")]
         public IActionResult UpdatePatient(Guid id, UpdatePatientDto updatePatientDto)
         {
-            var patient = dbContext.Patients.Find(id);
-            if (patient is null)
-            {
+           
+            var updated = _patientService.UpdatePatient(id, updatePatientDto);
+            if (updated is null)
+                {
+                _log.LogWarning($"Failed to update patient with ID: {id}");
                 return NotFound();
-            }
-            patient.patientName = updatePatientDto.patientName;
-            patient.patientSurname = updatePatientDto.patientSurname;
-            patient.patientEmail = updatePatientDto.patientEmail;
-            patient.patientPhone = updatePatientDto.patientPhone;
-            patient.patientAddress = updatePatientDto.patientAddress;
-            patient.healthProvider = updatePatientDto.healthProvider;
-            patient.gender = updatePatientDto.gender;
+                }
+            return Ok(updated);
 
-
-            dbContext.SaveChanges();
-            return Ok(patient);
         }
 
 
@@ -105,22 +93,32 @@ namespace AltermedManager.Controllers
         [Route("{id:guid}")]
         public IActionResult DeletePatient(Guid id)
         {
-            var patient = dbContext.Patients.Find(id);
-            if(patient is null)
-            {
+            if(_patientService.DeletePatient(id) is true)
+                {
+                _log.LogInformation($"Patient with ID: {id} deleted successfully.");
+                return Ok("Patient deleted");
+                }
+            else
+                {
+                _log.LogWarning($"Failed to delete patient with ID: {id}. Patient not found.");
                 return NotFound();
-            }
-            dbContext.Patients.Remove(patient);
-            dbContext.SaveChanges();
-            return Ok("Patient deleted");
+                }
+            
         }
+
+        //------------------------------------------------
+        // Health Provider Integration  
+        //------------------------------------------------
 
         [HttpGet("hp/{idNum}")]
         public async Task<IActionResult> GetFromHealthProvider(string idNum)
             {
             var patient = await _healthProvider.GetPatientByIdAsync(idNum);
             if (patient == null)
+                {
+                _log.LogWarning($"No patient found with ID number: {idNum} in health provider system.");
                 return NotFound();
+                }
 
             return Ok(patient);
             }

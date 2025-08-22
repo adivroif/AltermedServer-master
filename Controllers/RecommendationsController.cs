@@ -14,13 +14,15 @@ namespace AltermedManager.Controllers
     public class RecommendationsController : ControllerBase
     {
         private readonly RecommendationService _recommendationService;
+        private readonly ILogger<AddressController> _log;
 
         //for test - REMOVEEEEE
         private readonly TreatmentService _treatmentService;
-        public RecommendationsController(RecommendationService recommendationService, TreatmentService treatmentService)
+        public RecommendationsController(RecommendationService recommendationService, TreatmentService treatmentService, ILogger<AddressController> log)
             {
             _recommendationService = recommendationService;
             _treatmentService = treatmentService;
+            _log = log;
             }
 
         [HttpGet("byAppoint/{appointmentId}")] //route parameter
@@ -31,6 +33,7 @@ namespace AltermedManager.Controllers
             var recommendation = await _recommendationService.GetRecommendationsByTreatmentGroupAsync(appointmentId);
             if (recommendation is null)
                 {
+                _log.LogWarning($"No recommendation found for appointment ID: {appointmentId}");
                 return NotFound();
                 }
             return Ok(recommendation);
@@ -41,7 +44,12 @@ namespace AltermedManager.Controllers
         public async Task<IActionResult> GetRecommendationsOfPatient(Guid patientId)
         {
             var result = await _recommendationService.GetRecommendationsOfPatient(patientId);
-            return result == null || !result.Any() ? NotFound("No recommendations found.") : Ok(result);
+            if (result == null)
+                {
+                _log.LogWarning($"No recommendations found for patient ID: {patientId}");
+                return NotFound("No recommendations found.");
+                }
+            return Ok(result);
         }
 
         [HttpGet("byRecommendationId/{recommendationId}")] //route parameter
@@ -49,7 +57,12 @@ namespace AltermedManager.Controllers
         public async Task<IActionResult> GetRecommendation(int recommendationId)
         {
             var result = await _recommendationService.GetRecommendation(recommendationId);
-            return result == null ? NotFound("No recommendation found.") : Ok(result);
+            if (result == null)
+                {
+                _log.LogWarning($"No recommendation found with ID: {recommendationId}");
+                return NotFound("No recommendation found.");
+                }
+            return Ok(result);
         }
 
         [HttpGet("byPatient/ischosen/{PatientId}")] //route parameter
@@ -57,9 +70,16 @@ namespace AltermedManager.Controllers
         public async Task<IActionResult> GetRecommendationsNotChosenOfPatient(Guid patientId)
         {
             var result = await _recommendationService.GetRecommendationsNotChosenOfPatient(patientId);
-            return result == null || !result.Any() ? NotFound("No recommendations not chosen found.") : Ok(result);
+            if (result == null || !result.Any())
+                {
+                _log.LogWarning($"Not no chosen found for patient ID: {patientId}");
+                return NotFound("No recommendations not chosen found.");
+                }
+            return Ok(result);
         }
 
+
+        //this end point used for testing purposes only
         [HttpGet("{bodyPart}/{treatmentId}")]
         public IActionResult testEndPoint(string bodyPart, int treatmentId)
             {
@@ -72,8 +92,13 @@ namespace AltermedManager.Controllers
         [Route("recommendationId/{recommendationId}")]
         public IActionResult UpdateRecommendation(int recommendationId, UpdateRecommendationDto updateRecommendationDto)
         {
-            var result = _recommendationService.UpdateRecommendation(recommendationId, updateRecommendationDto);         
-            return result == null ? NotFound("Failed in update recommendation.") : Ok(result);
+            var result = _recommendationService.UpdateRecommendation(recommendationId, updateRecommendationDto);
+            if (result == null)
+                {
+                _log.LogWarning($"Failed to update recommendation with ID: {recommendationId}");
+                return NotFound("Failed in update recommendation.");
+                }
+            return Ok(result);
         }
 
 

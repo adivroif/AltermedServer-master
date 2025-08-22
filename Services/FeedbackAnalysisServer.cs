@@ -1,7 +1,9 @@
-﻿using AltermedManager.Data;
+﻿using AltermedManager.Controllers;
+using AltermedManager.Data;
 using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
 using AltermedManager.Models.Enums;
+using AltermedManager.Resources;
 using Microsoft.EntityFrameworkCore;
 
 namespace AltermedManager.Services
@@ -9,11 +11,12 @@ namespace AltermedManager.Services
     public class FeedbackAnalysisServer
         {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<AddressController> _log;
 
-
-        public FeedbackAnalysisServer(ApplicationDbContext context)
+        public FeedbackAnalysisServer(ApplicationDbContext context, ILogger<AddressController>log)
             {
             _context = context;
+            _log = log;
             }
 
         /*
@@ -25,10 +28,10 @@ namespace AltermedManager.Services
             {
 
             var normalizedParts = new List<string>();
-            if (bodyPart.Contains("יד"))
-                normalizedParts.AddRange(new[] { "יד שמאלית", "יד ימנית" });
-            else if (bodyPart.Contains("רגל"))
-                normalizedParts.AddRange(new[] { "רגל שמאלית", "רגל ימנית" });
+            if (bodyPart.Contains(BodyPartsForReport.Arm))
+                normalizedParts.AddRange(new[] { BodyPartsForReport.LeftArm, BodyPartsForReport.RightArm });
+            else if (bodyPart.Contains(BodyPartsForReport.Leg))
+                normalizedParts.AddRange(new[] { BodyPartsForReport.LeftLeg, BodyPartsForReport.RightLeg });
             else
                 normalizedParts.Add(bodyPart);
 

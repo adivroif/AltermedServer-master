@@ -1,18 +1,19 @@
-﻿using AltermedManager.Data;
+﻿using AltermedManager.Controllers;
+using AltermedManager.Data;
 using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace AltermedManager.Services
     {
     public class TreatmentService
         {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<AddressController> _log;
 
-        public TreatmentService(ApplicationDbContext context)
+        public TreatmentService(ApplicationDbContext context, ILogger<AddressController> _log)
             {
             _context = context;
+            this._log = _log;
             }
         public List<Treatment> GetAllTreatments()
             {
@@ -22,14 +23,9 @@ namespace AltermedManager.Services
             {
             return _context.Treatments.Find(id);
             }
-        /*public async Task<Treatment?> GetTreatmentById(int id)
-            {
-            return await _context.Treatments
-                            .Where(t => t.treatmentId == id)
-                            .FirstOrDefaultAsync();
-            }*/
         public Treatment AddTreatment(NewTreatmentDto newTreatment)
             {
+
             var treatmentEntity = new Treatment()
             {
                 treatmentId = newTreatment.treatmentId,
@@ -53,6 +49,7 @@ namespace AltermedManager.Services
             var treatment = _context.Treatments.Find(id);
             if (treatment is null)
                 {
+                _log.LogError("Treatment with ID {Id} not found", id);
                 return null;
                 }
 
@@ -74,6 +71,7 @@ namespace AltermedManager.Services
             var treatment = _context.Treatments.Find(id);
             if (treatment is null)
                 {
+                _log.LogError("Treatment with ID {Id} not found for deletion", id);
                 return false;
                 }
             _context.Treatments.Remove(treatment);
@@ -92,6 +90,7 @@ namespace AltermedManager.Services
                 }
             else
                 {
+                _log.LogWarning("Group name is null, returning empty treatment list.");
                 return null;
 
                 }
@@ -121,7 +120,11 @@ namespace AltermedManager.Services
                     _context.SaveChanges();
 
                     }
-                
+
+                }
+            else
+                {
+                _log.LogError("Appointment with ID {AppointmentId} not found", _appointmentId);
                 }
             }
 

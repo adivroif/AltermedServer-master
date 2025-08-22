@@ -4,6 +4,12 @@ namespace AltermedManager.Helpers
     {
     public class FirebaseTokenValidator
         {
+        private readonly ILogger<FirebaseTokenValidator> _logger;
+
+        public FirebaseTokenValidator(ILogger<FirebaseTokenValidator> logger)
+            {
+            _logger = logger;
+            }
         public static async Task<string?> VerifyTokenAsync(string idToken)
             {
             try
@@ -12,8 +18,7 @@ namespace AltermedManager.Helpers
                 return decodedToken.Uid;
                 }
             catch (Exception ex)
-                {
-                Console.WriteLine("Firebase token verification failed: " + ex.Message);
+                {                
                 return null;
                 }
             }

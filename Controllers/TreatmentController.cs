@@ -14,10 +14,11 @@ namespace AltermedManager.Controllers
     public class TreatmentController : ControllerBase
     {
         private readonly TreatmentService _treatmentService;
-        public TreatmentController(TreatmentService treatmentService)
-        {
+        private readonly ILogger<AddressController> _log;
+        public TreatmentController(TreatmentService treatmentService, ILogger<AddressController> log)
+            {
             _treatmentService = treatmentService;
-
+            _log = log;
             }
         [HttpGet]
         public IActionResult GetAllTreatments()
@@ -47,6 +48,7 @@ namespace AltermedManager.Controllers
             var treatment = _treatmentService.GetTreatmentByUId(id);
             if (treatment is null)
                 {
+                _log.LogWarning($"No treatment found with ID: {id}");
                 return NotFound();
                 }
             return Ok(treatment);
@@ -58,25 +60,11 @@ namespace AltermedManager.Controllers
             var treatment = _treatmentService.GetTreatmentByUName(name);
             if (treatment == null)
             {
+                _log.LogWarning($"No treatment found with name: {name}");
                 return NotFound();
             }
             return Ok(treatment);
         }
-        /*
-        [HttpGet("{name}")]
-        public IActionResult GetTreatmentByUName(string name)
-        {
-            var treatment = dbContext.Treatments.FirstOrDefault(t => t.treatmentName == name);
-            if (treatment == null)
-            {
-                return NotFound();
-            }
-            return Ok(treatment);
-        }
-        */
-
-
-
         [HttpPost]
         public IActionResult AddTreatment(NewTreatmentDto treatmentDto)
         {
@@ -89,7 +77,12 @@ namespace AltermedManager.Controllers
         public IActionResult UpdateTreatment(Guid id, UpdateTreatmentDto updateTreatmentDto)
         {
             var treatment = _treatmentService.UpdateTreatment(id, updateTreatmentDto);
-            return treatment is null ? NotFound() : Ok(treatment);
+            if (treatment == null)
+                {
+                _log.LogWarning($"No treatment found with ID: {id}");
+                return NotFound();
+                }
+            return Ok(treatment);
             }
 
 
@@ -98,6 +91,6 @@ namespace AltermedManager.Controllers
         public IActionResult DeleteTreatment(int id)
         {
             return _treatmentService.DeleteTreatment(id) ? Ok() : NotFound();
-            }
+        }
     }
 }
