@@ -94,8 +94,8 @@ namespace AltermedManager.Controllers
 
 
         [HttpDelete]
-        [Route("{id:guid}")]
-        public IActionResult DeleteTreatment(Guid id)
+        [Route("{id:int}")]
+        public IActionResult DeleteTreatment(int id)
         {
             return _treatmentService.DeleteTreatment(id) ? Ok() : NotFound();
             }

@@ -33,7 +33,7 @@ namespace AltermedManager.Controllers
         {
             var schedules = dbContext.DoctorSchedule
                                      .Include(ds => ds.Address) // כולל את הכתובת
-                                     .Where(ds => ds.doctorid == id.ToString()) // מסנן לפי doctorId
+                                     .Where(ds => ds.scheduleid == id) // מסנן לפי doctorId
                                      .ToList(); // מחזיר רשימה
 
             if (schedules == null || !schedules.Any())

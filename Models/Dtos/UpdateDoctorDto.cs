@@ -13,7 +13,7 @@ namespace AltermedManager.Models.Dtos
         public required string doctorName { get; set; }
         public required string doctorSurname { get; set; }
         public List<string>? specList { get; set; }
-        public Guid scheduleId { get; set; }
+        public Guid? scheduleId { get; set; }
         public List<int> placesWorking { get; set; } = new List<int>();
         public required string Phone { get; set; }
         public required string Email { get; set; }

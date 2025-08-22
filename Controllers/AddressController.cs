@@ -61,7 +61,7 @@ namespace AltermedManager.Controllers
         }
 
         [HttpDelete]
-        [Route("{id:guid}")]
+        [Route("{id:int}")]
         public IActionResult DeleteAddress(int id)
         {
             var address = dbContext.Address.Find(id);
