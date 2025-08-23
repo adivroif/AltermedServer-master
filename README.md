@@ -49,6 +49,7 @@ The backend is built with **C# ASP.NET (.NET 9)**, using a **layered architectur
 - **Swagger / OpenAPI** – API documentation.  
 
 As part of the project, a Flutter client was developed, consisting of two applications: one for doctors and one for patients:
+
 [Flutter application - Unified-Medical-File](https://github.com/adivroif/Unified_Medical_File)
 
 ## ⚙️ Architecture
