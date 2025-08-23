@@ -50,7 +50,9 @@ The backend is built with **C# ASP.NET (.NET 9)**, using a **layered architectur
 
 As part of the project, a Flutter client was developed, consisting of two applications: one for doctors and one for patients:
 
-[Flutter application - Unified-Medical-File](https://github.com/adivroif/Unified_Medical_File)
+$$
+🔗[Flutter application - Unified-Medical-File](https://github.com/adivroif/Unified_Medical_File)
+$$
 
 ## ⚙️ Architecture
 
@@ -85,8 +87,10 @@ The backend follows a **Layered Architecture** pattern:
 - **Rule-based recommendation engine**:  
   - If feedback score is not high (less than 3.0) → suggest alternative treatment.  
   - If rejected → suggest based on treatment group & advancement level.
-  
-[RecommendationsService](./Services/RecommendationService.cs)
+
+$$
+🔗[RecommendationsService](./Services/RecommendationService.cs)
+$$
 
 ### 4. Patient Feedback
 - Collects structured feedback via forms (from patient application).  
@@ -96,8 +100,10 @@ The backend follows a **Layered Architecture** pattern:
 - Stored in DB and sent via FCM.  
 - **Doctors** → notified of new recommendations & patient requests.  
 - **Patients** → notified of approved recommendations & doctor replies. 
- 
-[NotificationsService](./Services/NotificationsService.cs)
+
+$$
+🔗[NotificationsService](./Services/NotificationsService.cs)
+$$
 
 ### 6. File Management - (implemented in application)
 - Upload photos/files (using FirebaseStorage) in DB.  
@@ -169,5 +175,6 @@ The backend includes unit and integration testing to ensure code quality and rel
 - **Performance and reliability Tests** - TBD
 
 Testing plan you can find here:
-[Test Plan](https://github.com/adivroif/AltermedServer-master/tree/master/Tests)
-
+$$
+🔗[Test Plan](https://github.com/adivroif/AltermedServer-master/tree/master/Tests)
+$$
