@@ -97,7 +97,7 @@ The backend follows a **Layered Architecture** pattern:
 - **Doctors** → notified of new recommendations & patient requests.  
 - **Patients** → notified of approved recommendations & doctor replies. 
  
-[NotificationsService](.Services/NotificationsService.cs)
+[NotificationsService](./Services/NotificationsService.cs)
 
 ### 6. File Management - (implemented in application)
 - Upload photos/files (using FirebaseStorage) in DB.  
