@@ -153,7 +153,9 @@ dotnet ef database update
 dotnet run
 ```
 API will start at: http://localhost:5000
+
 Dummy Health Provider will start at: http://localhost:5047
+
 Swagger documentation is available at: http://localhost:5000/swagger
 
 ## 🧪 Testing
