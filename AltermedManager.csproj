@@ -33,6 +33,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageReference Include="RestSharp" Version="112.1.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.35.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.1" />
     <PackageReference Include="Twilio" Version="7.12.1" />
     <PackageReference Include="xunit.abstractions" Version="2.0.3" />
@@ -84,6 +85,10 @@
       <LastGenOutput>RecommendationsSources.Designer.cs</LastGenOutput>
       <CustomToolNamespace>AltermedManager.Resources</CustomToolNamespace>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Tests\" />
   </ItemGroup>
 
 </Project>
