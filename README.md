@@ -15,7 +15,7 @@ The backend is built with **C# ASP.NET (.NET 9)**, using a **layered architectur
 
 | Member | Role | Profile |
 |--------|------|---------|
-| <img src="./docs/team/veronika.jpeg" width="80" style="border-radius:50%;"> | **Veronika Merkulova** – Backend & System Architecture | [LinkedIn](https://www.linkedin.com/in/veronikamerkulova-software/) • [GitHub](https://github.com/VeroniMe) |
+| <img src="./docs/team/veronika.jpeg" width="80" style="border-radius:50%"> | **Veronika Merkulova** – Backend & System Architecture | [LinkedIn](https://www.linkedin.com/in/veronikamerkulova-software/) • [GitHub](https://github.com/VeroniMe) |
 | <img src="./docs/team/adiv.jpg"> | **Adiv Roif** – Frontend (Flutter) & UX | [LinkedIn](https://www.linkedin.com/in/adiv-roif-418bb3270/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app) • [GitHub]([adivroif](https://github.com/adivroif)) |
 
 ## 👩‍💻 Development Team
