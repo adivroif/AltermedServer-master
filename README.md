@@ -13,20 +13,13 @@ The backend is built with **C# ASP.NET (.NET 9)**, using a **layered architectur
 
 ## 👩‍💻 Development Team
 
-| Member | Role | Profile |
-|--------|------|---------|
-| <img src="./docs/team/veronika.jpeg" width="80" style="border-radius:50%"> | **Veronika Merkulova** – Backend & System Architecture | [LinkedIn](https://www.linkedin.com/in/veronikamerkulova-software/) • [GitHub](https://github.com/VeroniMe) |
-| <img src="./docs/team/adiv.jpg"> | **Adiv Roif** – Frontend (Flutter) & UX | [LinkedIn](https://www.linkedin.com/in/adiv-roif-418bb3270/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app) • [GitHub]([adivroif](https://github.com/adivroif)) |
-
-## 👩‍💻 Development Team
-
 <p align="center">
   <a href="https://www.linkedin.com/in/veronikamerkulova-software/">
     <img src="./docs/team/veronika.jpeg" width="100" style="border-radius:50%">
   </a><br>
   <b>Veronika Merkulova</b><br>
   Backend & System Architecture<br>
-  <a href="[https://www.linkedin.com/in/your-profile](https://www.linkedin.com/in/veronikamerkulova-software/)">LinkedIn</a> | <a href="[https://github.com/your-username](https://github.com/VeroniMe)">GitHub</a>
+  <a href="https://www.linkedin.com/in/veronikamerkulova-software/">LinkedIn</a> | <a href="https://github.com/VeroniMe">GitHub</a>
 </p>
 
 <p align="center">
@@ -35,7 +28,7 @@ The backend is built with **C# ASP.NET (.NET 9)**, using a **layered architectur
   </a><br>
   <b>Teammate Name</b><br>
   Frontend (Flutter) & UX<br>
-  <a href="[https://www.linkedin.com/in/teammate-profile](https://www.linkedin.com/in/adiv-roif-418bb3270/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)">LinkedIn</a> | <a href="[https://github.com/teammate-username](https://github.com/adivroif)">GitHub</a>
+  <a href="https://www.linkedin.com/in/adiv-roif-418bb3270/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app">LinkedIn</a> | <a href="https://github.com/adivroif">GitHub</a>
 </p>
 
 ## 🛠️ Technologies
