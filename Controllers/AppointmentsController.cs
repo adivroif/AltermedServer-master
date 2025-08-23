@@ -41,18 +41,6 @@ namespace AltermedManager.Controllers
             return Ok(result);
             }
 
-        [HttpGet("notReported/{patientId}")]
-        public async Task<IActionResult> GetUnreportedAppointmentsByPatientId(string patientId)
-            {
-            var result = await _appointmentService.GetUnreportedAppointmentsByPatientId(Guid.Parse(patientId));
-            if (result == null || !result.Any())
-                {
-                _log.LogInformation("Unreported appointments for patient with {Id} not found.", patientId);
-                NotFound("No unreported appointments found.");
-                }
-            return Ok(result);
-            }
-
 
         /*GET endpoint to get all appointment of specific doctor in range of 30 days*/
         [HttpGet("doctor30/{doctorId}")]
