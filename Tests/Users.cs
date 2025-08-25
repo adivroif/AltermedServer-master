@@ -1,5 +1,6 @@
 ﻿using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
+using FluentAssertions;
 using RestSharp;
 using System.Net;
 using System.Text.Json;
@@ -11,7 +12,7 @@ namespace UnitTestProject
     public class Users
     {
         private readonly ITestOutputHelper _output;
-        private const string BaseUrl = "http://10.0.0.25:5000";
+        private const string BaseUrl = "http://192.168.1.237:5000";
         private string Endpoint = "api/Users";
 
         public Users(ITestOutputHelper output)

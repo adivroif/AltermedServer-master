@@ -32,7 +32,7 @@ public class NonFuncionalTests
     }
 
     [Fact]
-    public async Task CreateNewTreatment_ShouldBeSuccessful()
+    public async Task FunctionalTest_CreateNewTreatment_ShouldBeSuccessful()
     {
         // 1. Prepare the data for the new treatment
         var newTreatment = new Treatment

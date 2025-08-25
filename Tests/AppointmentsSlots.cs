@@ -1,5 +1,6 @@
 ﻿using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
+using FluentAssertions;
 using RestSharp;
 using System.Net;
 using System.Text.Json;
@@ -11,7 +12,7 @@ namespace UnitTestProject
     public class AppointmentsSlots
     {
         private readonly ITestOutputHelper _output;
-        private const string BaseUrl = "http://10.0.0.25:5000";
+        private const string BaseUrl = "http://192.168.1.237:5000";
         private string Endpoint = "api/AppointmentsSlots";
 
         public AppointmentsSlots(ITestOutputHelper output)
@@ -52,6 +53,40 @@ namespace UnitTestProject
             // שלב 1: ודא שהבקשה הצליחה
             Assert.True(getAppointmentSlotResponse.IsSuccessful);
             Assert.False(!getAppointmentSlotResponse.IsSuccessful);
+        }
+
+        [Fact]
+        public async Task getAndUpdateAppointmentSlotByAppointmentSlotId()
+        {
+            int id = 38;
+            Endpoint = "api/AppointmentsSlots/" + id.ToString();
+            _output.WriteLine("here");
+            var getAppointmentSlotRequest = new RestRequest(Endpoint, Method.Get);
+            var client = new RestClient(BaseUrl);
+            var getAppointmentSlotResponse = await client.ExecuteAsync(getAppointmentSlotRequest);
+            getAppointmentSlotRequest.AddHeader("Content-Type", "application/json"); // Add this line
+            getAppointmentSlotRequest.AddJsonBody(id.ToString());
+
+            AppointmentSlots getSlot = JsonSerializer.Deserialize<AppointmentSlots>(
+    getAppointmentSlotResponse.Content,
+    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+   );
+            _output.WriteLine($"Status Code: {getAppointmentSlotResponse.StatusCode}");
+            _output.WriteLine($"Content: {getAppointmentSlotResponse.Content}");
+
+            Endpoint = "api/AppointmentsSlots/" + getSlot.slotid.ToString();
+            var updateAppointmentSlotRequest = new RestRequest(Endpoint, Method.Put);
+            getSlot.starttime = "19:00";
+            getSlot.endtime = "19:15";
+            updateAppointmentSlotRequest.AddHeader("Content-Type", "application/json"); // Add this line
+            updateAppointmentSlotRequest.AddJsonBody(getSlot);
+            var updateAppointmentSlotResponse = await client.ExecuteAsync(updateAppointmentSlotRequest);
+
+            _output.WriteLine($"Status Code: {updateAppointmentSlotResponse.StatusCode}");
+            _output.WriteLine($"Content: {updateAppointmentSlotResponse.Content}");
+            // שלב 1: ודא שהבקשה הצליחה
+            Assert.True(updateAppointmentSlotResponse.IsSuccessful);
+            Assert.False(!updateAppointmentSlotResponse.IsSuccessful);
         }
 
         [Fact]

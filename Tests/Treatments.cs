@@ -1,6 +1,7 @@
 ﻿using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
 using AltermedManager.Models.Enums;
+using FluentAssertions;
 using RestSharp;
 using System.Net;
 using System.Text.Json;
@@ -12,7 +13,7 @@ namespace UnitTestProject
     public class Treatments
     {
         private readonly ITestOutputHelper _output;
-        private const string BaseUrl = "http://10.0.0.25:5000";
+        private const string BaseUrl = "http://192.168.1.237:5000";
         private string Endpoint = "api/Treatment";
 
         public Treatments(ITestOutputHelper output)
@@ -33,6 +34,40 @@ namespace UnitTestProject
             // שלב 1: ודא שהבקשה הצליחה
             Assert.True(allTreatmentsResponse.IsSuccessful);
             Assert.False(!allTreatmentsResponse.IsSuccessful);
+        }
+
+        [Fact]
+        public async Task getAndUpdateTreatmentByTreatmentId()
+        {
+            int id = 20;
+            Endpoint = "api/Treatment/" + id.ToString();
+            var getTreatmentRequest = new RestRequest(Endpoint, Method.Get);
+            var client = new RestClient(BaseUrl);
+            var getTreatmentResponse = await client.ExecuteAsync(getTreatmentRequest);
+
+
+            Treatment getTreatment = JsonSerializer.Deserialize<Treatment>(
+    getTreatmentResponse.Content,
+    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+   );
+            _output.WriteLine(getTreatment.treatmentId.ToString());
+
+            getTreatment.isAdvanced = true;
+
+            _output.WriteLine($"Status Code: {getTreatmentResponse.StatusCode}");
+            _output.WriteLine($"Content: {getTreatmentResponse.Content}");
+
+            Endpoint = "api/Treatment/" + getTreatment.treatmentId.ToString();
+            var updateTreatmentRequest = new RestRequest(Endpoint, Method.Put);
+            updateTreatmentRequest.AddHeader("Content-Type", "application/json"); // Add this line
+            updateTreatmentRequest.AddJsonBody(getTreatment);
+            var updateTreatmentResponse = await client.ExecuteAsync(updateTreatmentRequest);
+
+            _output.WriteLine($"Status Code: {updateTreatmentResponse.StatusCode}");
+            _output.WriteLine($"Content: {updateTreatmentResponse.Content}");
+            // שלב 1: ודא שהבקשה הצליחה
+            Assert.True(updateTreatmentResponse.IsSuccessful);
+            Assert.False(!updateTreatmentResponse.IsSuccessful);
         }
 
         [Fact]

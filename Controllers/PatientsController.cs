@@ -50,7 +50,7 @@ namespace AltermedManager.Controllers
         [HttpGet("{id:guid}")]
         public Patient? GetPatientByUId(Guid id)
         {
-            var patient = dbContext.Patients.Find(id);
+            var patient = dbContext.Patients.Include(p => p.patientAddress).FirstOrDefault(p => p.id == id);
             if (patient is null)
             {
                 _log.LogWarning($"No patient found with ID: {id}");

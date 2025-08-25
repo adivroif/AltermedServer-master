@@ -1,5 +1,6 @@
 ﻿using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
+using FluentAssertions;
 using RestSharp;
 using System.Net;
 using System.Text.Json;
@@ -11,7 +12,7 @@ namespace UnitTestProject
     public class PatientsFeedbacks
     {
         private readonly ITestOutputHelper _output;
-        private const string BaseUrl = "http://10.0.0.25:5000";
+        private const string BaseUrl = "http://192.168.1.237:5000";
         private string Endpoint = "api/PatientsFeedbacks";
 
         public PatientsFeedbacks(ITestOutputHelper output)
@@ -52,6 +53,38 @@ namespace UnitTestProject
             // שלב 1: ודא שהבקשה הצליחה
             Assert.True(allPatientsFeedbacksByPatientIdResponse.IsSuccessful);
             Assert.False(!allPatientsFeedbacksByPatientIdResponse.IsSuccessful);
+        }
+
+        [Fact]
+        public async Task getAndUpdatePatientFeedbackByPatientFeedbacksId()
+        {
+            String id = "fe7036c2-472d-45d8-b3a1-db2f336a9691";
+            Endpoint = "api/PatientsFeedbacks/" + id.ToString();
+            var getPatientFeedbacksRequest = new RestRequest(Endpoint, Method.Get);
+            var client = new RestClient(BaseUrl);
+            var getPatientFeedbacksResponse = await client.ExecuteAsync(getPatientFeedbacksRequest);
+
+
+            PatientFeedback getPatientFeedbacks = JsonSerializer.Deserialize<PatientFeedback>(
+    getPatientFeedbacksResponse.Content,
+    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+   );
+            getPatientFeedbacks.bodyPart = "ראש";
+
+            _output.WriteLine($"Status Code: {getPatientFeedbacksResponse.StatusCode}");
+            _output.WriteLine($"Content: {getPatientFeedbacksResponse.Content}");
+
+            Endpoint = "api/PatientsFeedbacks/" + getPatientFeedbacks.feedbackId;
+            var updatePatientFeedbacksRequest = new RestRequest(Endpoint, Method.Put);
+            updatePatientFeedbacksRequest.AddHeader("Content-Type", "application/json"); // Add this line
+            updatePatientFeedbacksRequest.AddJsonBody(getPatientFeedbacks);
+            var updatePatientFeedbacksResponse = await client.ExecuteAsync(updatePatientFeedbacksRequest);
+
+            _output.WriteLine($"Status Code: {updatePatientFeedbacksResponse.StatusCode}");
+            _output.WriteLine($"Content: {updatePatientFeedbacksResponse.Content}");
+            // שלב 1: ודא שהבקשה הצליחה
+            Assert.True(updatePatientFeedbacksResponse.IsSuccessful);
+            Assert.False(!updatePatientFeedbacksResponse.IsSuccessful);
         }
 
         [Fact]

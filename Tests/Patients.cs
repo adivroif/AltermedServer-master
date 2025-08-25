@@ -1,5 +1,6 @@
 ﻿using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
+using FluentAssertions;
 using RestSharp;
 using System.Net;
 using System.Text.Json;
@@ -11,7 +12,7 @@ namespace UnitTestProject
     public class Patients
     {
         private readonly ITestOutputHelper _output;
-        private const string BaseUrl = "http://10.0.0.25:5000";
+        private const string BaseUrl = "http://192.168.1.237:5000";
         private string Endpoint = "api/Patients";
 
         public Patients(ITestOutputHelper output)
@@ -50,6 +51,38 @@ namespace UnitTestProject
             // שלב 1: ודא שהבקשה הצליחה
             Assert.True(getPatientResponse.IsSuccessful);
             Assert.False(!getPatientResponse.IsSuccessful);
+        }
+
+        [Fact]
+        public async Task getAndUpdatePatientByPatientId()
+        {
+            String id = "28621ddc-7343-4656-a944-afcac0b04b89";
+            Endpoint = "api/Patients/" + id.ToString();
+            var getPatientRequest = new RestRequest(Endpoint, Method.Get);
+            var client = new RestClient(BaseUrl);
+            var getPatientResponse = await client.ExecuteAsync(getPatientRequest);
+
+
+            Patient getPatient = JsonSerializer.Deserialize<Patient>(
+    getPatientResponse.Content,
+    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+   );
+            getPatient.patientEmail = "ww@example.com";
+
+            _output.WriteLine($"Status Code: {getPatientResponse.StatusCode}");
+            _output.WriteLine($"Content: {getPatientResponse.Content}");
+
+            Endpoint = "api/Patients/" + getPatient.id;
+            var updatePatientRequest = new RestRequest(Endpoint, Method.Put);
+            updatePatientRequest.AddHeader("Content-Type", "application/json"); // Add this line
+            updatePatientRequest.AddJsonBody(getPatient);
+            var updatePatientResponse = await client.ExecuteAsync(updatePatientRequest);
+
+            _output.WriteLine($"Status Code: {updatePatientResponse.StatusCode}");
+            _output.WriteLine($"Content: {updatePatientResponse.Content}");
+            // שלב 1: ודא שהבקשה הצליחה
+            Assert.True(updatePatientResponse.IsSuccessful);
+            Assert.False(!updatePatientResponse.IsSuccessful);
         }
 
 

@@ -1,6 +1,7 @@
 ﻿using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
 using AltermedManager.Models.Enums;
+using FluentAssertions;
 using RestSharp;
 using System.Net;
 using System.Text.Json;
@@ -12,7 +13,7 @@ namespace UnitTestProject
     public class PatientsRequest
     {
         private readonly ITestOutputHelper _output;
-        private const string BaseUrl = "http://10.0.0.25:5000";
+        private const string BaseUrl = "http://192.168.1.237:5000";
         private string Endpoint = "api/PatientsRequest";
 
         public PatientsRequest(ITestOutputHelper output)
@@ -33,6 +34,38 @@ namespace UnitTestProject
             // שלב 1: ודא שהבקשה הצליחה
             Assert.True(allPatientsRequestsResponse.IsSuccessful);
             Assert.False(!allPatientsRequestsResponse.IsSuccessful);
+        }
+
+        [Fact]
+        public async Task getAndUpdatePatientRequestByPatientRequestId()
+        {
+            String id = "39e37d52-c448-41a8-83ae-7d0b18d5ef55";
+            Endpoint = "api/PatientsRequest/" + id.ToString();
+            var getPatientRequestRequest = new RestRequest(Endpoint, Method.Get);
+            var client = new RestClient(BaseUrl);
+            var getPatientRequestResponse = await client.ExecuteAsync(getPatientRequestRequest);
+
+
+            PatientRequest getPatientRequest = JsonSerializer.Deserialize<PatientRequest>(
+    getPatientRequestResponse.Content,
+    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+   );
+            getPatientRequest.answerFromDoctor = "Test";
+
+            _output.WriteLine($"Status Code: {getPatientRequestResponse.StatusCode}");
+            _output.WriteLine($"Content: {getPatientRequestResponse.Content}");
+
+            Endpoint = "api/PatientsRequest/" + getPatientRequest.requestId;
+            var updatePatientRequestRequest = new RestRequest(Endpoint, Method.Put);
+            updatePatientRequestRequest.AddHeader("Content-Type", "application/json"); // Add this line
+            updatePatientRequestRequest.AddJsonBody(getPatientRequest);
+            var updatePatientRequestResponse = await client.ExecuteAsync(updatePatientRequestRequest);
+
+            _output.WriteLine($"Status Code: {updatePatientRequestResponse.StatusCode}");
+            _output.WriteLine($"Content: {updatePatientRequestResponse.Content}");
+            // שלב 1: ודא שהבקשה הצליחה
+            Assert.True(updatePatientRequestResponse.IsSuccessful);
+            Assert.False(!updatePatientRequestResponse.IsSuccessful);
         }
 
         [Fact]

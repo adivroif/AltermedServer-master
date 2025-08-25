@@ -42,7 +42,10 @@ namespace YourProjectName.Controllers
             {
                 return BadRequest(new { message = "Phone number is required" });
             }
-
+            if (request.PhoneNumber.StartsWith("0"))
+            {
+                request.PhoneNumber = "+972" + request.PhoneNumber.Substring(1);
+            }
             Console.WriteLine(request.PhoneNumber);
             // Search for the patient in the database using their phone number
             Patient? user = await dbContext.Patients
@@ -58,7 +61,7 @@ namespace YourProjectName.Controllers
                 // Send the OTP via SMS
                 await SendPasswordResetSmsAsync(request.PhoneNumber, otp);
 
-                return Ok(new { message = "OTP sent successfully to your phone number." });
+                return Ok(new { message = "OTP generated successfully", otpCode = otp });
             }
             else
             {
@@ -98,7 +101,7 @@ namespace YourProjectName.Controllers
             {
                 var message = await MessageResource.CreateAsync(
                     to: new Twilio.Types.PhoneNumber(phoneNumber),
-                    from: new Twilio.Types.PhoneNumber(twilioPhoneNumber),
+                    from: "AlterMed",
                     body: $"Your AlterMed password reset code is: {otp}"
                 );
                 Console.WriteLine($"SMS sent successfully with SID: {message.Sid}");

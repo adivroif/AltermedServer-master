@@ -18,7 +18,7 @@ public class TreatmentPostTest
     }
 
     [Fact]
-    public async Task CreateNewTreatment_ShouldBeSuccessful()
+    public async Task FunctionalityTest()
     {
         // 1. Prepare the data for the new treatment
         var newTreatment = new Treatment

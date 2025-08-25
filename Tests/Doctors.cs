@@ -1,5 +1,6 @@
 ﻿using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
+using FluentAssertions;
 using RestSharp;
 using System.Net;
 using System.Text.Json;
@@ -11,7 +12,7 @@ namespace UnitTestProject
     public class Doctors
     {
         private readonly ITestOutputHelper _output;
-        private const string BaseUrl = "http://10.0.0.25:5000";
+        private const string BaseUrl = "http://192.168.1.237:5000";
         private string Endpoint = "api/Doctors";
 
         public Doctors(ITestOutputHelper output)
@@ -72,6 +73,40 @@ namespace UnitTestProject
             Assert.True(getDoctorResponse.IsSuccessful);
             Assert.False(!getDoctorResponse.IsSuccessful);
 
+        }
+
+        [Fact]
+        public async Task getAndUpdateDoctorByDoctorId()
+        {
+            String id = "e8cdb665-f4fe-49e0-953c-b1aac2d5d94e";
+            Endpoint = "api/Doctors/" + id.ToString();
+            _output.WriteLine("here");
+            var getDoctorRequest = new RestRequest(Endpoint, Method.Get);
+            var client = new RestClient(BaseUrl);
+            var getDoctorResponse = await client.ExecuteAsync(getDoctorRequest);
+            getDoctorRequest.AddHeader("Content-Type", "application/json"); // Add this line
+            getDoctorRequest.AddJsonBody(id.ToString());
+
+            Doctor getDoctor = JsonSerializer.Deserialize<Doctor>(
+    getDoctorResponse.Content,
+    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+   );
+
+            _output.WriteLine($"Status Code: {getDoctorResponse.StatusCode}");
+            _output.WriteLine($"Content: {getDoctorResponse.Content}");
+
+            Endpoint = "api/Doctors/" + getDoctor.DoctorId;
+            var updateDoctorRequest = new RestRequest(Endpoint, Method.Put);
+            getDoctor.doctorLicense = "123456";
+            updateDoctorRequest.AddHeader("Content-Type", "application/json"); // Add this line
+            updateDoctorRequest.AddJsonBody(getDoctor);
+            var updateDoctorResponse = await client.ExecuteAsync(updateDoctorRequest);
+
+            _output.WriteLine($"Status Code: {updateDoctorResponse.StatusCode}");
+            _output.WriteLine($"Content: {updateDoctorResponse.Content}");
+            // שלב 1: ודא שהבקשה הצליחה
+            Assert.True(updateDoctorResponse.IsSuccessful);
+            Assert.False(!updateDoctorResponse.IsSuccessful);
         }
 
         [Fact]

@@ -1,5 +1,6 @@
 ﻿using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
+using FluentAssertions;
 using RestSharp;
 using System.Net;
 using System.Text.Json;
@@ -11,7 +12,7 @@ namespace UnitTestProject
     public class DoctorsSchedule
     {
         private readonly ITestOutputHelper _output;
-        private const string BaseUrl = "http://10.0.0.25:5000";
+        private const string BaseUrl = "http://192.168.1.237:5000";
         private string Endpoint = "api/DoctorsSchedule";
 
         public DoctorsSchedule(ITestOutputHelper output)
@@ -53,6 +54,40 @@ namespace UnitTestProject
             // שלב 1: ודא שהבקשה הצליחה
             Assert.True(getDoctorScheduleResponse.IsSuccessful);
             Assert.False(!getDoctorScheduleResponse.IsSuccessful);
+        }
+
+        [Fact]
+        public async Task getAndUpdateDoctorScheduleByDoctorScheduleId()
+        {
+            String id = "a1b2c3d4-e5f6-7890-1234-567890abcdef";
+            Endpoint = "api/DoctorsSchedule/" + id.ToString();
+            var getDoctorScheduleRequest = new RestRequest(Endpoint, Method.Get);
+            var client = new RestClient(BaseUrl);
+            getDoctorScheduleRequest.AddHeader("Content-Type", "application/json"); // Add this line
+            getDoctorScheduleRequest.AddJsonBody(id.ToString());
+            var getDoctorScheduleResponse = await client.ExecuteAsync(getDoctorScheduleRequest);
+
+            _output.WriteLine($"Status Code: {getDoctorScheduleResponse.StatusCode}");
+            _output.WriteLine($"Content: {getDoctorScheduleResponse.Content}");
+            List<DoctorSchedule> doctorSchedules = JsonSerializer.Deserialize<List<DoctorSchedule>>(
+                getDoctorScheduleResponse.Content,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            );
+
+
+
+            Endpoint = "api/DoctorsSchedule/" + doctorSchedules[0].scheduleid;
+            var updateDoctorScheduleRequest = new RestRequest(Endpoint, Method.Put);
+            doctorSchedules[0].endtime = "13:00";
+            updateDoctorScheduleRequest.AddHeader("Content-Type", "application/json"); // Add this line
+            updateDoctorScheduleRequest.AddJsonBody(doctorSchedules[0]);
+            var updateDoctorScheduleResponse = await client.ExecuteAsync(updateDoctorScheduleRequest);
+
+            _output.WriteLine($"Status Code: {updateDoctorScheduleResponse.StatusCode}");
+            _output.WriteLine($"Content: {updateDoctorScheduleResponse.Content}");
+            // שלב 1: ודא שהבקשה הצליחה
+            Assert.True(updateDoctorScheduleResponse.IsSuccessful);
+            Assert.False(!updateDoctorScheduleResponse.IsSuccessful);
         }
 
         [Fact]

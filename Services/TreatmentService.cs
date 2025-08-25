@@ -44,7 +44,7 @@ namespace AltermedManager.Services
             _context.SaveChanges();
             return treatmentEntity;
             }
-        public Treatment? UpdateTreatment(Guid id, UpdateTreatmentDto updateDto)
+        public Treatment? UpdateTreatment(int id, UpdateTreatmentDto updateDto)
             {
             var treatment = _context.Treatments.Find(id);
             if (treatment is null)
