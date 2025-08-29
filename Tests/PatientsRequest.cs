@@ -1,7 +1,6 @@
 ﻿using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
 using AltermedManager.Models.Enums;
-using FluentAssertions;
 using RestSharp;
 using System.Net;
 using System.Text.Json;

@@ -1,7 +1,6 @@
 ﻿using AltermedManager.Models.Dtos;
 using AltermedManager.Models.Entities;
 using AltermedManager.Models.Enums;
-using FluentAssertions;
 using RestSharp;
 using System.Net;
 using System.Text.Json;
@@ -120,7 +119,6 @@ namespace UnitTestProject
                 treatmentGroup = "massage",
                 isAdvanced = true,
                 score = 0,
-                treatmentPlaceId = 42,
                 numOfFeedbacks = 0,
                 suitCategories = [],
                 treatmentId = 100
@@ -151,7 +149,6 @@ namespace UnitTestProject
                 treatmentGroup = "massage",
                 isAdvanced = true,
                 score = 0,
-                treatmentPlaceId = 42,
                 numOfFeedbacks = 0,
                 suitCategories = [],
                 treatmentId = 100

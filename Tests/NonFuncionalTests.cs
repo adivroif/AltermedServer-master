@@ -45,7 +45,6 @@ public class NonFuncionalTests
             suitCategories = new List<string> { "adults", "youth" },
             treatmentGroup = "massage",
             isAdvanced = true,
-            treatmentPlaceId = 42
         };
 
         var client = new RestClient(BaseUrl);
@@ -75,7 +74,6 @@ public class NonFuncionalTests
         Assert.Equal(newTreatment.treatmentDuration, createdTreatment.treatmentDuration);
         Assert.Equal(newTreatment.treatmentGroup, createdTreatment.treatmentGroup);
         Assert.Equal(newTreatment.isAdvanced, createdTreatment.isAdvanced);
-        Assert.Equal(newTreatment.treatmentPlaceId, createdTreatment.treatmentPlaceId);
 
 
 

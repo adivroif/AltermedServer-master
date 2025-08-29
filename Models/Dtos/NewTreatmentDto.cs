@@ -15,7 +15,6 @@ namespace AltermedManager.Models.Dtos
         public bool isAdvanced { get; set; } //if treatment is invasive and more aggressive or not
         public int numOfFeedbacks { get; set; }
         public float score { get; set; }
-        public int treatmentPlaceId { get; set; }
 
     }
 }
