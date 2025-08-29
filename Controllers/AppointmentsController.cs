@@ -124,5 +124,16 @@ namespace AltermedManager.Controllers
                 }
             }
 
+        [HttpGet("notReported/{patientId}")]
+        public async Task<IActionResult> GetUnreportedAppointmentsByPatientId(string patientId)
+        {
+            var result = await _appointmentService.GetUnreportedAppointmentsByPatientId(Guid.Parse(patientId));
+            if (result is null)
+            {
+                _log.LogInformation("Unreported appointments for patient with {Id} not found", patientId);
+                return NotFound("No unreported appointments found");
+            }
+            return Ok(result);
         }
+    }
     }
