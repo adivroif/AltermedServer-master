@@ -153,7 +153,7 @@ namespace AltermedManager.Controllers
                 return NotFound();
             }
             user.id = updateUser.id;
-            user.firebaseId = 
+            user.firebaseId = updateUser.firebaseId;
             user.name = updateUser.name;
             dbContext.SaveChanges();
             return Ok(user);

@@ -69,9 +69,8 @@ namespace AltermedManager.Controllers
         [HttpGet("appointmentId/{appointmentId}")]
         public async Task<IActionResult> GetPatientFeedbackByAppointmentId(Guid appointmentId)
         {
-            var feedback = await dbContext.PatientFeedbacks
-                .Where(f => f.appointmentId == appointmentId)
-                .FirstOrDefaultAsync();
+            var feedback = await _feedbacksService.GetFeedbackByAppointmentId(appointmentId);
+
             if (feedback is null)
             {
                 _log.LogWarning($"No feedback found for appointment with ID: {appointmentId}");

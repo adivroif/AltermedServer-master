@@ -1,4 +1,5 @@
-﻿namespace AltermedManager.Models.Entities
+﻿
+namespace AltermedManager.Models.Entities
 {
     public class Address
     {
@@ -11,5 +12,9 @@
         public double latitude {  get; set; }
         public double longitude { get; set; }
 
+        public static implicit operator Address(string v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

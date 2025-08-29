@@ -39,6 +39,15 @@ namespace AltermedManager.Controllers
             return feedbacks;
             }
 
+        public async Task<List<PatientFeedback>> GetFeedbackByAppointmentId(Guid appointmentID)
+        {
+            var feedbacks = await dbContext.PatientFeedbacks
+                .Where(f => f.appointmentId == appointmentID)
+                .ToListAsync();
+
+            return feedbacks;
+        }
+
         public PatientFeedback? GetFeedbackByUId(Guid id)
             {
             return dbContext.PatientFeedbacks.Find(id);

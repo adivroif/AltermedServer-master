@@ -73,8 +73,8 @@ namespace AltermedManager.Controllers
             }
 
         [HttpPut]
-        [Route("{id:guid}")]
-        public IActionResult UpdateTreatment(Guid id, UpdateTreatmentDto updateTreatmentDto)
+        [Route("{id:int}")]
+        public IActionResult UpdateTreatment(int id, UpdateTreatmentDto updateTreatmentDto)
         {
             var treatment = _treatmentService.UpdateTreatment(id, updateTreatmentDto);
             if (treatment == null)
@@ -87,8 +87,8 @@ namespace AltermedManager.Controllers
 
 
         [HttpDelete]
-        [Route("{id:guid}")]
-        public IActionResult DeleteTreatment(Guid id)
+        [Route("{id:int}")]
+        public IActionResult DeleteTreatment(int id)
         {
             return _treatmentService.DeleteTreatment(id) ? Ok() : NotFound();
         }

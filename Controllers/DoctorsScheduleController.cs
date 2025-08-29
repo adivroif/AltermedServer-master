@@ -33,9 +33,9 @@ namespace AltermedManager.Controllers
         public IActionResult GetDoctorSchedulesByUId(Guid id)
         {
             var schedules = dbContext.DoctorSchedule
-                                     .Include(ds => ds.Address) 
-                                     .Where(ds => ds.doctorid == id.ToString()) 
-                                     .ToList();
+                                     .Include(ds => ds.Address) // כולל את הכתובת
+                                     .Where(ds => ds.scheduleid == id) // מסנן לפי doctorId
+                                     .ToList(); // מחזיר רשימה
 
             if (schedules == null || !schedules.Any())
             {

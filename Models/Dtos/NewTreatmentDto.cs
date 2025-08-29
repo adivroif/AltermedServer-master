@@ -16,5 +16,5 @@ namespace AltermedManager.Models.Dtos
         public int numOfFeedbacks { get; set; }
         public float score { get; set; }
 
-        }
     }
+}

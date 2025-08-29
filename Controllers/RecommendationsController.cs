@@ -90,9 +90,9 @@ namespace AltermedManager.Controllers
 
         [HttpPut]
         [Route("recommendationId/{recommendationId}")]
-        public IActionResult UpdateRecommendation(int recommendationId, UpdateRecommendationDto updateRecommendationDto)
+        public async Task<IActionResult> UpdateRecommendation(int recommendationId, UpdateRecommendationDto updateRecommendationDto)
         {
-            var result = _recommendationService.UpdateRecommendation(recommendationId, updateRecommendationDto);
+            var result = await _recommendationService.UpdateRecommendation(recommendationId, updateRecommendationDto);
             if (result == null)
                 {
                 _log.LogWarning($"Failed to update recommendation with ID: {recommendationId}");

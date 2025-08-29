@@ -19,6 +19,7 @@ namespace AltermedManager.Models.Entities
         public int numOfFeedbacks { get; set; }
         public float score { get; set; }
 
-        }
+
     }
+}
     

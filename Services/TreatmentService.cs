@@ -27,7 +27,7 @@ namespace AltermedManager.Services
             {
 
             var treatmentEntity = new Treatment()
-                {
+            {
                 treatmentId = newTreatment.treatmentId,
                 treatmentName = newTreatment.treatmentName,
                 treatmentDescription = newTreatment.treatmentDescription,
@@ -36,13 +36,14 @@ namespace AltermedManager.Services
                 treatmentGroup = newTreatment.treatmentGroup,
                 isAdvanced = newTreatment.isAdvanced,
                 numOfFeedbacks = newTreatment.numOfFeedbacks,
-                score = newTreatment.score
-                };
+                score = newTreatment.score,
+                treatmentDuration = newTreatment.treatmentDuration
+            };
             _context.Treatments.Add(treatmentEntity);
             _context.SaveChanges();
             return treatmentEntity;
             }
-        public Treatment? UpdateTreatment(Guid id, UpdateTreatmentDto updateDto)
+        public Treatment? UpdateTreatment(int id, UpdateTreatmentDto updateDto)
             {
             var treatment = _context.Treatments.Find(id);
             if (treatment is null)
@@ -59,10 +60,11 @@ namespace AltermedManager.Services
             treatment.isAdvanced = updateDto.isAdvanced;
             treatment.numOfFeedbacks = updateDto.numOfFeedbacks;
             treatment.score = updateDto.score;
+            treatment.treatmentDuration = updateDto.treatmentDuration;
             _context.SaveChanges();
             return treatment;
             }
-        public bool DeleteTreatment(Guid id)
+        public bool DeleteTreatment(int id)
             {
             var treatment = _context.Treatments.Find(id);
             if (treatment is null)
