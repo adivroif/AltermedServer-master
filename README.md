@@ -5,6 +5,7 @@
 Scheduling an appointment, getting a referral, going back to the doctor, and then to treatment again... this long process makes the patient’s experience frustrating and inefficient. Our system aims to solve this problem by unifying medical records, appointments, treatments, and alternative therapies into one centralized platform.
 
 **🫂One platform. One record. One patient journey.**
+See promo video of our platfrom here - >🔗[AlterMed System](https://www.youtube.com/watch?v=vFXWHB-W4ww&ab_channel=VeronikaMerk.)
 
 **AltermedManager Backend** is the server component of a healthcare management system for **alternative medicine treatments**.  
 It exposes a secure **REST API** for managing users, appointments, treatments, recommendations, feedback, notifications, and uploaded medical documents.  
